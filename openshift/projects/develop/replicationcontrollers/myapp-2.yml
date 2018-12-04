@@ -1,0 +1,165 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    kubectl.kubernetes.io/desired-replicas: "1"
+    openshift.io/deployer-pod.completed-at: 2018-11-25 15:54:21 +0000 UTC
+    openshift.io/deployer-pod.created-at: 2018-11-25 15:45:44 +0000 UTC
+    openshift.io/deployer-pod.name: myapp-2-deploy
+    openshift.io/deployment-config.latest-version: "2"
+    openshift.io/deployment-config.name: myapp
+    openshift.io/deployment.phase: Failed
+    openshift.io/deployment.replicas: "0"
+    openshift.io/deployment.status-reason: image change
+    openshift.io/encoded-deployment-config: |
+      {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"myapp","namespace":"develop","selfLink":"/apis/apps.openshift.io/v1/namespaces/develop/deploymentconfigs/myapp","uid":"01799152-f0c9-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4139153","generation":3,"creationTimestamp":"2018-11-25T15:44:33Z","labels":{"app":"eap70-postgresql-persistent-s2i","application":"myapp","template":"eap70-postgresql-persistent-s2i","xpaas":"1.4.14"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["myapp"],"from":{"kind":"ImageStreamTag","namespace":"develop","name":"myapp:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/develop/myapp@sha256:30ccf9b6f9e789d10765d3535ab868d08136fdd7c32b6d22e9ad21c3f326bd75"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"deploymentConfig":"myapp"},"template":{"metadata":{"name":"myapp","creationTimestamp":null,"labels":{"application":"myapp","deploymentConfig":"myapp"}},"spec":{"volumes":[{"name":"eap-keystore-volume","secret":{"secretName":"eap7-app-secret","defaultMode":420}},{"name":"eap-jgroups-keystore-volume","secret":{"secretName":"eap7-app-secret","defaultMode":420}}],"containers":[{"name":"myapp","image":"docker-registry.default.svc:5000/develop/myapp@sha256:30ccf9b6f9e789d10765d3535ab868d08136fdd7c32b6d22e9ad21c3f326bd75","ports":[{"name":"jolokia","containerPort":8778,"protocol":"TCP"},{"name":"http","containerPort":8080,"protocol":"TCP"},{"name":"https","containerPort":8443,"protocol":"TCP"},{"name":"ping","containerPort":8888,"protocol":"TCP"}],"env":[{"name":"DB_SERVICE_PREFIX_MAPPING","value":"myapp-postgresql=DB"},{"name":"DB_JNDI","value":"java:jboss/datasources/TodoListDS"},{"name":"DB_USERNAME","value":"userki1"},{"name":"DB_PASSWORD","value":"dLGLDSaR"},{"name":"DB_DATABASE","value":"root"},{"name":"TX_DATABASE_PREFIX_MAPPING","value":"myapp-postgresql=DB"},{"name":"DB_MIN_POOL_SIZE"},{"name":"DB_MAX_POOL_SIZE"},{"name":"DB_TX_ISOLATION"},{"name":"JGROUPS_PING_PROTOCOL","value":"openshift.DNS_PING"},{"name":"OPENSHIFT_DNS_PING_SERVICE_NAME","value":"myapp-ping"},{"name":"OPENSHIFT_DNS_PING_SERVICE_PORT","value":"8888"},{"name":"HTTPS_KEYSTORE_DIR","value":"/etc/eap-secret-volume"},{"name":"HTTPS_KEYSTORE","value":"keystore.jks"},{"name":"HTTPS_KEYSTORE_TYPE"},{"name":"HTTPS_NAME"},{"name":"HTTPS_PASSWORD"},{"name":"MQ_CLUSTER_PASSWORD","value":"s4YRwaL0"},{"name":"MQ_QUEUES"},{"name":"MQ_TOPICS"},{"name":"JGROUPS_ENCRYPT_SECRET","value":"eap7-app-secret"},{"name":"JGROUPS_ENCRYPT_KEYSTORE_DIR","value":"/etc/jgroups-encrypt-secret-volume"},{"name":"JGROUPS_ENCRYPT_KEYSTORE","value":"jgroups.jceks"},{"name":"JGROUPS_ENCRYPT_NAME"},{"name":"JGROUPS_ENCRYPT_PASSWORD"},{"name":"JGROUPS_CLUSTER_PASSWORD","value":"5OWwatKM"},{"name":"AUTO_DEPLOY_EXPLODED","value":"false"},{"name":"DEFAULT_JOB_REPOSITORY","value":"myapp-postgresql"},{"name":"TIMER_SERVICE_DATA_STORE","value":"myapp-postgresql"}],"resources":{"limits":{"memory":"1Gi"}},"volumeMounts":[{"name":"eap-keystore-volume","readOnly":true,"mountPath":"/etc/eap-secret-volume"},{"name":"eap-jgroups-keystore-volume","readOnly":true,"mountPath":"/etc/jgroups-encrypt-secret-volume"}],"livenessProbe":{"exec":{"command":["/bin/bash","-c","/opt/eap/bin/livenessProbe.sh"]},"initialDelaySeconds":60,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"readinessProbe":{"exec":{"command":["/bin/bash","-c","/opt/eap/bin/readinessProbe.sh"]},"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":75,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/develop/myapp@sha256:30ccf9b6f9e789d10765d3535ab868d08136fdd7c32b6d22e9ad21c3f326bd75"}}}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-11-25T15:44:33Z","lastTransitionTime":"2018-11-25T15:44:33Z","message":"Deployment config does not have minimum availability."}]}}
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: eap70-postgresql-persistent-s2i
+    application: myapp
+    openshift.io/deployment-config.name: myapp
+    template: eap70-postgresql-persistent-s2i
+    xpaas: 1.4.14
+  name: myapp-2
+  ownerReferences:
+  - apiVersion: apps.openshift.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DeploymentConfig
+    name: myapp
+    uid: 01799152-f0c9-11e8-ba2b-0aa0c5b29fe8
+spec:
+  replicas: 0
+  selector:
+    deployment: myapp-2
+    deploymentConfig: myapp
+    deploymentconfig: myapp
+  template:
+    metadata:
+      annotations:
+        openshift.io/deployment-config.latest-version: "2"
+        openshift.io/deployment-config.name: myapp
+        openshift.io/deployment.name: myapp-2
+      creationTimestamp: null
+      labels:
+        application: myapp
+        deployment: myapp-2
+        deploymentConfig: myapp
+        deploymentconfig: myapp
+    spec:
+      containers:
+      - env:
+        - name: DB_SERVICE_PREFIX_MAPPING
+          value: myapp-postgresql=DB
+        - name: DB_JNDI
+          value: java:jboss/datasources/TodoListDS
+        - name: DB_USERNAME
+          value: userki1
+        - name: DB_PASSWORD
+          value: dLGLDSaR
+        - name: DB_DATABASE
+          value: root
+        - name: TX_DATABASE_PREFIX_MAPPING
+          value: myapp-postgresql=DB
+        - name: DB_MIN_POOL_SIZE
+        - name: DB_MAX_POOL_SIZE
+        - name: DB_TX_ISOLATION
+        - name: JGROUPS_PING_PROTOCOL
+          value: openshift.DNS_PING
+        - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+          value: myapp-ping
+        - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+          value: "8888"
+        - name: HTTPS_KEYSTORE_DIR
+          value: /etc/eap-secret-volume
+        - name: HTTPS_KEYSTORE
+          value: keystore.jks
+        - name: HTTPS_KEYSTORE_TYPE
+        - name: HTTPS_NAME
+        - name: HTTPS_PASSWORD
+        - name: MQ_CLUSTER_PASSWORD
+          value: s4YRwaL0
+        - name: MQ_QUEUES
+        - name: MQ_TOPICS
+        - name: JGROUPS_ENCRYPT_SECRET
+          value: eap7-app-secret
+        - name: JGROUPS_ENCRYPT_KEYSTORE_DIR
+          value: /etc/jgroups-encrypt-secret-volume
+        - name: JGROUPS_ENCRYPT_KEYSTORE
+          value: jgroups.jceks
+        - name: JGROUPS_ENCRYPT_NAME
+        - name: JGROUPS_ENCRYPT_PASSWORD
+        - name: JGROUPS_CLUSTER_PASSWORD
+          value: 5OWwatKM
+        - name: AUTO_DEPLOY_EXPLODED
+          value: "false"
+        - name: DEFAULT_JOB_REPOSITORY
+          value: myapp-postgresql
+        - name: TIMER_SERVICE_DATA_STORE
+          value: myapp-postgresql
+        image: docker-registry.default.svc:5000/develop/myapp@sha256:30ccf9b6f9e789d10765d3535ab868d08136fdd7c32b6d22e9ad21c3f326bd75
+        imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /opt/eap/bin/livenessProbe.sh
+          failureThreshold: 3
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: myapp
+        ports:
+        - containerPort: 8778
+          name: jolokia
+          protocol: TCP
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        - containerPort: 8888
+          name: ping
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /opt/eap/bin/readinessProbe.sh
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 1Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/eap-secret-volume
+          name: eap-keystore-volume
+          readOnly: true
+        - mountPath: /etc/jgroups-encrypt-secret-volume
+          name: eap-jgroups-keystore-volume
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 75
+      volumes:
+      - name: eap-keystore-volume
+        secret:
+          defaultMode: 420
+          secretName: eap7-app-secret
+      - name: eap-jgroups-keystore-volume
+        secret:
+          defaultMode: 420
+          secretName: eap7-app-secret
+status:
+  replicas: 0

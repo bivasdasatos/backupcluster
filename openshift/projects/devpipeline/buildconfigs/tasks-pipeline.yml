@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    pipeline.alpha.openshift.io/uses: '[{"name": "jboss", "namespace": "", "kind":
+      "DeploymentConfig"}]'
+  creationTimestamp: null
+  labels:
+    app: cicd-pipeline
+    name: cicd-pipeline
+  name: tasks-pipeline
+spec:
+  nodeSelector: {}
+  output: {}
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    type: None
+  strategy:
+    jenkinsPipelineStrategy:
+      env:
+      - name: DEV_PROJECT
+        value: devpipeline
+      - name: STAGE_PROJECT
+        value: test
+      jenkinsfile: "node {\r\n    \r\n   /* stage('preparation')  {\r\n         def
+        userInput = input(\r\n        id: 'userInput', message: 'preparation',\r\n
+        \                       parameters: [\r\n                                    [$class:
+        'TextParameterDefinition', defaultValue: 'cicd', description: 'dev env', name:
+        'DEV_PROJECT'],\r\n                                   [$class: 'TextParameterDefinition',
+        defaultValue: 'test1', description: 'stage env', name: 'STAGE_PROJECT']\r\n
+        \                                ] )\r\n                      devenv = userInput.DEV_PROJECT\r\n
+        \                     stageenv = userInput.STAGE_PROJECT\r\n                      input
+        message: \"Is the PARAMETERS are correctly set for deployment?\", ok: \"Promote\"
+        \r\n        \r\n    }*/\r\n      def mvnHome\r\n      mvnHome = tool 'maven'\r\n
+        \     stage('Fetch Code') { \r\n        \tgit changelog: false, credentialsId:
+        'b7552763e472555d9593ff49af979d3e7a879884', url: 'https://github.com/sudhirkr448/boxfuse-sample-java-war-hello.git'\r\n
+        \  }\r\n      stage('Build') {\r\n       \techo \"in Build\"\r\n       sh
+        \"'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean install\"\r\n   }
+        \   \r\n   /*   stage('Sonar') {\r\n       echo \"in sonar\" \r\n   \tsh \"'${mvnHome}/bin/mvn'
+        -X sonar:sonar -Dsonar.host.url=http://10.131.0.64:9000 -Dsonar.login=efa577e3d61f46c582d3680ded89992ffd3a95b8
+        '-fpom.xml' '-Dsonar.projectKey=cicd' '-Dsonar.language=java' '-Dsonar.sources=src'\"\r\n
+        \  }*/\r\n   stage('Nexus'){\r\n       \techo \"in Nexus\"\r\n   \tsh \"curl
+        -v -u admin:admin123 --upload-file /var/lib/jenkins/jobs/devpipeline/jobs/devpipeline-tasks-pipeline/workspace/target/hello-1.0.war
+        \ http://10.131.0.206:8081/repository/myapp1/\"\r\n   }\r\n   stage('Build
+        Image') {\r\n       \topenshift.withCluster() {\r\n       \t\topenshift.withProject(env.DEV_PROJECT)
+        {\r\n     \t       \t\t    def bcSelector = openshift.selector(\"bc\", \"jboss\")\r\n
+        \                       def bcExists = bcSelector.exists()\r\n                   if
+        (!bcExists) { \r\n       \t\t    \topenshift.newBuild(\"--name=jboss\", \"--image-stream=jboss-eap70-openshift:1.5\",
+        \"--binary=true\") \r\n                   } else {\r\n                       echo
+        \"The specified image already exists\"\r\n                   }\r\n       \t\t
+        \   \t\r\n       \t\t}}\r\n       \t\t    \r\n   }    \r\n      stage('Build
+        Image with app') {\r\n        sh \"rm -rf oc-build && mkdir -p oc-build/deployments\"\r\n
+        \       sh \"cp /var/lib/jenkins/jobs/devpipeline/jobs/devpipeline-tasks-pipeline/workspace/target/hello-1.0.war
+        oc-build/deployments/ROOT.war\"                                \r\n           openshift.withCluster()
+        {\r\n             openshift.withProject(env.DEV_PROJECT) {\r\n               openshift.selector(\"bc\",
+        \"jboss\").startBuild(\"--from-dir=oc-build\", \"--wait=true\")\r\n             }\r\n
+        \          }\r\n      }\r\n      stage('deploy to Dev') {\r\n                              openshift.withCluster()
+        {\r\n          openshift.withProject(env.DEV_PROJECT) {\r\n            if
+        (openshift.selector('dc', 'jboss').exists()) {\r\n              openshift.selector('dc',
+        'jboss').delete()\r\n              openshift.selector('svc', 'jboss').delete()\r\n
+        \             openshift.selector('route', 'jboss').delete()\r\n            }\r\n\r\n
+        \           def app = openshift.newApp(\"jboss:latest\")\r\n            app.narrow(\"svc\").expose();\r\n
+        \           def dc = openshift.selector(\"dc\", \"jboss\")\r\n         openshiftScale(namespace:
+        'devpipeline', deploymentConfig: 'jboss',replicaCount: '2')\r\n         openshift.tag(\"${env.DEV_PROJECT}/jboss:latest\",
+        \"${env.DEV_PROJECT}/jboss:${build_number}\")\r\n         }\r\n   \t}\r\n
+        \  }\r\n   stage('Promote to TEST?') {\r\n         timeout(time:15, unit:'MINUTES')
+        {\r\n         input message: \"Promote to test?\", ok: \"Promote\"\r\n         }\r\n
+        \      openshift.withCluster() {\r\n         def version = \"test\"\r\n         openshift.tag(\"${env.DEV_PROJECT}/jboss:latest\",
+        \"${env.STAGE_PROJECT}/jboss:${version}\")\r\n         openshift.withProject(env.STAGE_PROJECT)
+        {\r\n            if (openshift.selector('dc', 'jboss').exists()) {\r\n            openshift.selector('dc',
+        'jboss').delete()\r\n            openshift.selector('svc', 'jboss').delete()\r\n
+        \           openshift.selector('route', 'jboss').delete()\r\n            }\r\n
+        \         openshift.newApp(\"jboss:${version}\").narrow(\"svc\").expose()\r\n
+        \         //openshiftScale(namespace: 'test', deploymentConfig: 'jboss',replicaCount:
+        '1')\r\n         }\r\n   \t}\r\n   }\r\n}"
+    type: JenkinsPipeline
+  triggers: []
+status:
+  lastVersion: 0

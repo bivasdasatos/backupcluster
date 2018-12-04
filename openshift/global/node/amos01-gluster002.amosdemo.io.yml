@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Node
+metadata:
+  annotations:
+    volumes.kubernetes.io/controller-managed-attach-detach: "true"
+  creationTimestamp: null
+  labels:
+    beta.kubernetes.io/arch: amd64
+    beta.kubernetes.io/os: linux
+    glusterfs: storage-host
+    kubernetes.io/hostname: amos01-gluster002.amosdemo.io
+    logging-infra-fluentd: "true"
+    node-role.kubernetes.io/compute: "true"
+  name: amos01-gluster002.amosdemo.io
+spec:
+  externalID: amos01-gluster002.amosdemo.io
+  unschedulable: true
+status:
+  daemonEndpoints:
+    kubeletEndpoint:
+      Port: 0
+  nodeInfo:
+    architecture: ""
+    bootID: ""
+    containerRuntimeVersion: ""
+    kernelVersion: ""
+    kubeProxyVersion: ""
+    kubeletVersion: ""
+    machineID: ""
+    operatingSystem: ""
+    osImage: ""
+    systemUUID: ""

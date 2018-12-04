@@ -1,0 +1,14 @@
+apiVersion: v1
+groupNames: null
+kind: RoleBinding
+metadata:
+  creationTimestamp: null
+  name: edit
+roleRef:
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: heketi-storage-service-account
+  namespace: glusterfs
+userNames:
+- system:serviceaccount:glusterfs:heketi-storage-service-account

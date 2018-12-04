@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/deployment-config.latest-version: "1"
+    openshift.io/deployment-config.name: nexus3
+    openshift.io/deployment.name: nexus3-1
+    openshift.io/generated-by: OpenShiftNewApp
+    openshift.io/scc: anyuid
+  creationTimestamp: null
+  generateName: nexus3-1-
+  labels:
+    app: nexus3
+    deployment: nexus3-1
+    deploymentconfig: nexus3
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicationController
+    name: nexus3-1
+    uid: 2a7fe355-f780-11e8-ba2b-0aa0c5b29fe8
+spec:
+  containers:
+  - image: sonatype/nexus3@sha256:262f9f2b5e61ebbee068a23acfdad8283d8b9285b9f99a8b38bb8c65b2a13071
+    imagePullPolicy: Always
+    name: nexus3
+    ports:
+    - containerPort: 8081
+      protocol: TCP
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - MKNOD
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /nexus-data
+      name: nexus3-volume-1
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-txbvt
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: default-dockercfg-gwz55
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    seLinuxOptions:
+      level: s0:c14,c4
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - emptyDir: {}
+    name: nexus3-volume-1
+  - name: default-token-txbvt
+    secret:
+      defaultMode: 420
+      secretName: default-token-txbvt
+status:
+  phase: Pending
+  qosClass: BestEffort

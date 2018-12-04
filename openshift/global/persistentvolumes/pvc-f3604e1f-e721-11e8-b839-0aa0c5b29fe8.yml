@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    Description: 'Gluster-Internal: Dynamically provisioned PV'
+    gluster.kubernetes.io/heketi-volume-id: 0e70751b5db1505c1d856382ec70cd8d
+    gluster.org/type: file
+    kubernetes.io/createdby: heketi-dynamic-provisioner
+    pv.beta.kubernetes.io/gid: "2001"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    pv.kubernetes.io/provisioned-by: kubernetes.io/glusterfs
+    volume.beta.kubernetes.io/mount-options: auto_unmount
+  creationTimestamp: null
+  name: pvc-f3604e1f-e721-11e8-b839-0aa0c5b29fe8
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: postgresql-sonarqube-data
+    namespace: devpipeline
+    resourceVersion: "1686990"
+    uid: f3604e1f-e721-11e8-b839-0aa0c5b29fe8
+  glusterfs:
+    endpoints: glusterfs-dynamic-postgresql-sonarqube-data
+    path: vol_0e70751b5db1505c1d856382ec70cd8d
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: glusterfs-storage
+status: {}

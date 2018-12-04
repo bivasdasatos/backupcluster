@@ -1,0 +1,160 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/build.name: cakephp-ex-1
+    openshift.io/scc: privileged
+  creationTimestamp: null
+  labels:
+    openshift.io/build.name: cakephp-ex-1
+  name: cakephp-ex-1-build
+  ownerReferences:
+  - apiVersion: build.openshift.io/v1
+    controller: true
+    kind: Build
+    name: cakephp-ex-1
+    uid: ddc6154d-f485-11e8-ba2b-0aa0c5b29fe8
+spec:
+  containers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-sti-build
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"cakephp-ex-1","namespace":"demo-project","selfLink":"/apis/build.openshift.io/v1/namespaces/demo-project/builds/cakephp-ex-1","uid":"ddc6154d-f485-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4955562","creationTimestamp":"2018-11-30T09:54:02Z","labels":{"app":"cakephp-ex","buildconfig":"cakephp-ex","openshift.io/build-config.name":"cakephp-ex","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"cakephp-ex","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"cakephp-ex","uid":"ddc0b37f-f485-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/openshift/cakephp-ex.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/php-71-rhel7@sha256:6ac00d8bb57bf20939cb7f38b53b0d564474d467b8db535bd167001cec6d5353"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/demo-project/cakephp-ex:latest"},"pushSecret":{"name":"builder-dockercfg-jcdgc"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/php-71-rhel7@sha256:6ac00d8bb57bf20939cb7f38b53b0d564474d467b8db535bd167001cec6d5353","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.1"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/demo-project/cakephp-ex:latest","config":{"kind":"BuildConfig","namespace":"demo-project","name":"cakephp-ex"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/openshift/cakephp-ex.git
+    - name: SOURCE_URI
+      value: https://github.com/openshift/cakephp-ex.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    - name: PUSH_DOCKERCFG_PATH
+      value: /var/run/secrets/openshift.io/push
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: sti-build
+    resources: {}
+    securityContext:
+      privileged: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/docker.sock
+      name: docker-socket
+    - mountPath: /var/run/crio/crio.sock
+      name: crio-socket
+    - mountPath: /var/run/secrets/openshift.io/push
+      name: builder-dockercfg-jcdgc-push
+      readOnly: true
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-d6psd
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: builder-dockercfg-jcdgc
+  initContainers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-git-clone
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"cakephp-ex-1","namespace":"demo-project","selfLink":"/apis/build.openshift.io/v1/namespaces/demo-project/builds/cakephp-ex-1","uid":"ddc6154d-f485-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4955562","creationTimestamp":"2018-11-30T09:54:02Z","labels":{"app":"cakephp-ex","buildconfig":"cakephp-ex","openshift.io/build-config.name":"cakephp-ex","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"cakephp-ex","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"cakephp-ex","uid":"ddc0b37f-f485-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/openshift/cakephp-ex.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/php-71-rhel7@sha256:6ac00d8bb57bf20939cb7f38b53b0d564474d467b8db535bd167001cec6d5353"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/demo-project/cakephp-ex:latest"},"pushSecret":{"name":"builder-dockercfg-jcdgc"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/php-71-rhel7@sha256:6ac00d8bb57bf20939cb7f38b53b0d564474d467b8db535bd167001cec6d5353","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.1"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/demo-project/cakephp-ex:latest","config":{"kind":"BuildConfig","namespace":"demo-project","name":"cakephp-ex"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/openshift/cakephp-ex.git
+    - name: SOURCE_URI
+      value: https://github.com/openshift/cakephp-ex.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: git-clone
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-d6psd
+      readOnly: true
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-manage-dockerfile
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"cakephp-ex-1","namespace":"demo-project","selfLink":"/apis/build.openshift.io/v1/namespaces/demo-project/builds/cakephp-ex-1","uid":"ddc6154d-f485-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4955562","creationTimestamp":"2018-11-30T09:54:02Z","labels":{"app":"cakephp-ex","buildconfig":"cakephp-ex","openshift.io/build-config.name":"cakephp-ex","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"cakephp-ex","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"cakephp-ex","uid":"ddc0b37f-f485-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/openshift/cakephp-ex.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/php-71-rhel7@sha256:6ac00d8bb57bf20939cb7f38b53b0d564474d467b8db535bd167001cec6d5353"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/demo-project/cakephp-ex:latest"},"pushSecret":{"name":"builder-dockercfg-jcdgc"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/php-71-rhel7@sha256:6ac00d8bb57bf20939cb7f38b53b0d564474d467b8db535bd167001cec6d5353","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"php:7.1"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/demo-project/cakephp-ex:latest","config":{"kind":"BuildConfig","namespace":"demo-project","name":"cakephp-ex"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/openshift/cakephp-ex.git
+    - name: SOURCE_URI
+      value: https://github.com/openshift/cakephp-ex.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: manage-dockerfile
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-d6psd
+      readOnly: true
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: builder
+  serviceAccountName: builder
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - emptyDir: {}
+    name: buildworkdir
+  - hostPath:
+      path: /var/run/docker.sock
+      type: ""
+    name: docker-socket
+  - hostPath:
+      path: /var/run/crio/crio.sock
+      type: ""
+    name: crio-socket
+  - name: builder-dockercfg-jcdgc-push
+    secret:
+      defaultMode: 384
+      secretName: builder-dockercfg-jcdgc
+  - name: builder-token-d6psd
+    secret:
+      defaultMode: 420
+      secretName: builder-token-d6psd
+status:
+  phase: Pending
+  qosClass: BestEffort

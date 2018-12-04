@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jboss
+  name: jboss
+subsets:
+- addresses:
+  - ip: 10.131.0.116
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: jboss-1-2fjhx
+      namespace: test1
+      resourceVersion: "5629020"
+      uid: 54fef79e-f6fe-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: 8443-tcp
+    port: 8443
+    protocol: TCP
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+  - name: 8778-tcp
+    port: 8778
+    protocol: TCP

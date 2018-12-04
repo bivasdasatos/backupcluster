@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jenkins-persistent
+    template: jenkins-persistent-template
+  name: jenkins-jnlp
+subsets:
+- addresses:
+  - ip: 10.131.0.221
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: jenkins-1-4955n
+      namespace: test1
+      resourceVersion: "5628937"
+      uid: 82bb7ad3-f314-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: agent
+    port: 50000
+    protocol: TCP

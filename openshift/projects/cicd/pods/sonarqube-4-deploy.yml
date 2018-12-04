@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/deployment-config.name: sonarqube
+    openshift.io/deployment.name: sonarqube-4
+    openshift.io/scc: anyuid
+  creationTimestamp: null
+  labels:
+    openshift.io/deployer-pod-for.name: sonarqube-4
+  name: sonarqube-4-deploy
+  ownerReferences:
+  - apiVersion: v1
+    kind: ReplicationController
+    name: sonarqube-4
+    uid: 762339b8-f48e-11e8-ba2b-0aa0c5b29fe8
+spec:
+  activeDeadlineSeconds: 21600
+  containers:
+  - env:
+    - name: KUBERNETES_MASTER
+      value: https://amos01-master001.amosdemo.io:8443
+    - name: OPENSHIFT_MASTER
+      value: https://amos01-master001.amosdemo.io:8443
+    - name: BEARER_TOKEN_FILE
+      value: /var/run/secrets/kubernetes.io/serviceaccount/token
+    - name: OPENSHIFT_CA_DATA
+      value: |
+        -----BEGIN CERTIFICATE-----
+        MIIC6jCCAdKgAwIBAgIBATANBgkqhkiG9w0BAQsFADAmMSQwIgYDVQQDDBtvcGVu
+        c2hpZnQtc2lnbmVyQDE1NDA4OTg4NjQwHhcNMTgxMDMwMTEyNzQ0WhcNMjMxMDI5
+        MTEyNzQ1WjAmMSQwIgYDVQQDDBtvcGVuc2hpZnQtc2lnbmVyQDE1NDA4OTg4NjQw
+        ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQD1lWG/OMd2f4oJAlYCpMZE
+        6fTWXXH0ADhYO2IZUUDz7oTW/dvKKOCRbgURHZgBJEHkWbJPgmNB8Tzl7DD4GvY0
+        FcubFDxM0oHAitclqm4l3gscdF9GL8IZHoLoljrsKUT1oOXbPyoki4rFKhwnnyJg
+        r1cpjpcDGz0FmWBRdooDxGq9fDrWz70eEiDHyI4Pqc9WuYhTETMVsoxGJ2/7n1h2
+        gIXt3pBjEGKTYXrOaArqWNENlr+zxblifNtnayQbjrMLR8tRrl0MDzccq1d5LVHC
+        0DI0GD0k+Q0e7KldaBnbIpV4wWCwZZZsUH3XM2sv7rc1iNgLKyB89IJEUsSo6g8L
+        AgMBAAGjIzAhMA4GA1UdDwEB/wQEAwICpDAPBgNVHRMBAf8EBTADAQH/MA0GCSqG
+        SIb3DQEBCwUAA4IBAQC1gpBuXtXvP6b3QEpeEXxinAhOS7psrdPiuSgLrZAmCnT0
+        Q4+m2KnnCPTYWGh0W93um04Bzuxuz/ocl2Q1edhWc/gIl2KgymBOlhGfYppRwKYl
+        ShzrrtSrapXYRuT6cQ5OCl+Mklj8vC9+gSYS71Bos9vkO1Ec9080DX9WT85UaCoo
+        oHlIRBTSD2v37A43VuBp1tqMe95a7Kce7AZnm0Y+XLdyx3ZxGxU9xBKdCtD7SSOF
+        PMNbS7Q1nYiCD1LDg1VU0noGhTxQyydv8WkBYV3UsVEsWrWqVaW15Rl8/WD5Lz5d
+        XIX0PE8T5LS4lMKqSerJvIDTRYceUHjmvgoeR39M
+        -----END CERTIFICATE-----
+    - name: OPENSHIFT_DEPLOYMENT_NAME
+      value: sonarqube-4
+    - name: OPENSHIFT_DEPLOYMENT_NAMESPACE
+      value: cicd
+    image: openshift3/ose-deployer:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: deployment
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - MKNOD
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: deployer-token-m6lnw
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: deployer-dockercfg-tvdb5
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext:
+    seLinuxOptions:
+      level: s0:c11,c10
+  serviceAccount: deployer
+  serviceAccountName: deployer
+  terminationGracePeriodSeconds: 10
+  volumes:
+  - name: deployer-token-m6lnw
+    secret:
+      defaultMode: 420
+      secretName: deployer-token-m6lnw
+status:
+  phase: Pending
+  qosClass: BestEffort

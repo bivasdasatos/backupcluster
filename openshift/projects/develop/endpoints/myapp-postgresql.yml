@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: eap70-postgresql-persistent-s2i
+    application: myapp
+    template: eap70-postgresql-persistent-s2i
+    xpaas: 1.4.14
+  name: myapp-postgresql
+subsets:
+- addresses:
+  - ip: 10.131.0.185
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: myapp-postgresql-1-nrnhb
+      namespace: develop
+      resourceVersion: "5628919"
+      uid: 4ecc3840-f30c-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - port: 5432
+    protocol: TCP

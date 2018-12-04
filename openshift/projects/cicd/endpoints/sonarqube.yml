@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: sonarqube
+  name: sonarqube
+subsets:
+- notReadyAddresses:
+  - ip: 10.131.0.207
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: sonarqube-1-8f28j
+      namespace: cicd
+      resourceVersion: "5662039"
+      uid: 4eb3e3f1-f30c-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: sonarqube
+    port: 9000
+    protocol: TCP

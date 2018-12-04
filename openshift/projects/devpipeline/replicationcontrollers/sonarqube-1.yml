@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    openshift.io/deployer-pod.completed-at: 2018-11-13 08:57:14 +0000 UTC
+    openshift.io/deployer-pod.created-at: 2018-11-13 08:56:04 +0000 UTC
+    openshift.io/deployer-pod.name: sonarqube-1-deploy
+    openshift.io/deployment-config.latest-version: "1"
+    openshift.io/deployment-config.name: sonarqube
+    openshift.io/deployment.phase: Complete
+    openshift.io/deployment.replicas: "1"
+    openshift.io/deployment.status-reason: config change
+    openshift.io/encoded-deployment-config: |
+      {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"sonarqube","namespace":"devpipeline","selfLink":"/apis/apps.openshift.io/v1/namespaces/devpipeline/deploymentconfigs/sonarqube","uid":"f35bf99b-e721-11e8-b839-0aa0c5b29fe8","resourceVersion":"1687009","generation":2,"creationTimestamp":"2018-11-13T08:56:03Z","labels":{"app":"sonarqube","deploymentconfig":"sonarqube"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["sonarqube"],"from":{"kind":"ImageStreamTag","namespace":"devpipeline","name":"sonarqube:6.7"},"lastTriggeredImage":"openshiftdemos/sonarqube@sha256:fe2c7b8e9923c4dc4bd7a5d12d51ee61eb171f8898121d5f7a921ba4e5a3e67c"}}],"replicas":1,"revisionHistoryLimit":10,"test":false,"selector":{"app":"sonarqube","deploymentconfig":"sonarqube"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"sonarqube","deploymentconfig":"sonarqube"},"annotations":{"openshift.io/container.sonarqube.image.entrypoint":"[\"./bin/run.sh\"]","openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"volumes":[{"name":"sonarqube-data","persistentVolumeClaim":{"claimName":"sonarqube-data"}}],"containers":[{"name":"sonarqube","image":"openshiftdemos/sonarqube@sha256:fe2c7b8e9923c4dc4bd7a5d12d51ee61eb171f8898121d5f7a921ba4e5a3e67c","ports":[{"containerPort":9000,"protocol":"TCP"}],"env":[{"name":"SONARQUBE_JDBC_PASSWORD","value":"LhwKw4r7JGPxmCmA"},{"name":"SONARQUBE_JDBC_URL","value":"jdbc:postgresql://postgresql-sonarqube/sonar"},{"name":"SONARQUBE_JDBC_USERNAME","value":"sonar"}],"resources":{"limits":{"cpu":"1","memory":"2Gi"},"requests":{"cpu":"200m","memory":"1Gi"}},"volumeMounts":[{"name":"sonarqube-data","mountPath":"/opt/sonarqube/data"}],"livenessProbe":{"httpGet":{"path":"/","port":9000,"scheme":"HTTP"},"initialDelaySeconds":60,"timeoutSeconds":5,"periodSeconds":20,"successThreshold":1,"failureThreshold":3},"readinessProbe":{"httpGet":{"path":"/","port":9000,"scheme":"HTTP"},"initialDelaySeconds":60,"timeoutSeconds":5,"periodSeconds":20,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-11-13T08:56:03Z","lastTransitionTime":"2018-11-13T08:56:03Z","message":"Deployment config does not have minimum availability."}]}}
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: sonarqube
+    deploymentconfig: sonarqube
+    openshift.io/deployment-config.name: sonarqube
+  name: sonarqube-1
+  ownerReferences:
+  - apiVersion: apps.openshift.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DeploymentConfig
+    name: sonarqube
+    uid: f35bf99b-e721-11e8-b839-0aa0c5b29fe8
+spec:
+  replicas: 1
+  selector:
+    app: sonarqube
+    deployment: sonarqube-1
+    deploymentconfig: sonarqube
+  template:
+    metadata:
+      annotations:
+        openshift.io/container.sonarqube.image.entrypoint: '["./bin/run.sh"]'
+        openshift.io/deployment-config.latest-version: "1"
+        openshift.io/deployment-config.name: sonarqube
+        openshift.io/deployment.name: sonarqube-1
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: sonarqube
+        deployment: sonarqube-1
+        deploymentconfig: sonarqube
+    spec:
+      containers:
+      - env:
+        - name: SONARQUBE_JDBC_PASSWORD
+          value: LhwKw4r7JGPxmCmA
+        - name: SONARQUBE_JDBC_URL
+          value: jdbc:postgresql://postgresql-sonarqube/sonar
+        - name: SONARQUBE_JDBC_USERNAME
+          value: sonar
+        image: openshiftdemos/sonarqube@sha256:fe2c7b8e9923c4dc4bd7a5d12d51ee61eb171f8898121d5f7a921ba4e5a3e67c
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9000
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: sonarqube
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9000
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/sonarqube/data
+          name: sonarqube-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: sonarqube-data
+        persistentVolumeClaim:
+          claimName: sonarqube-data
+status:
+  replicas: 0

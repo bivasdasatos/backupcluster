@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  labels:
+    app: django-ex
+  name: django-ex
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: django-ex:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: https://github.com/openshift/django-ex.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: python:3.6
+        namespace: openshift
+    type: Source
+  triggers:
+  - imageChange: {}
+    type: ImageChange
+  - type: ConfigChange
+  - generic:
+      secret: 0954808ba4902a1c
+    type: Generic
+  - github:
+      secret: 05b4b6fafcd44622
+    type: GitHub
+status:
+  lastVersion: 0

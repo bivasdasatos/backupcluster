@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/deployment-config.latest-version: "1"
+    openshift.io/deployment-config.name: gogs-postgresql
+    openshift.io/deployment.name: gogs-postgresql-1
+    openshift.io/scc: restricted
+  creationTimestamp: null
+  generateName: gogs-postgresql-1-
+  labels:
+    deployment: gogs-postgresql-1
+    deploymentconfig: gogs-postgresql
+    name: gogs-postgresql
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicationController
+    name: gogs-postgresql-1
+    uid: ae0cad03-e707-11e8-b839-0aa0c5b29fe8
+spec:
+  containers:
+  - env:
+    - name: POSTGRESQL_USER
+      value: gogs
+    - name: POSTGRESQL_PASSWORD
+      value: gogs
+    - name: POSTGRESQL_DATABASE
+      value: gogs
+    - name: POSTGRESQL_MAX_CONNECTIONS
+      value: "100"
+    - name: POSTGRESQL_SHARED_BUFFERS
+      value: 12MB
+    - name: POSTGRESQL_ADMIN_PASSWORD
+      value: Q8JPaCuw
+    image: registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:eb7c6fa06fce6d4efc55b7311dd45797a26bd4d8ec4648056ec068b7a4653ec8
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 10
+      initialDelaySeconds: 30
+      periodSeconds: 20
+      successThreshold: 1
+      tcpSocket:
+        port: 5432
+      timeoutSeconds: 1
+    name: postgresql
+    ports:
+    - containerPort: 5432
+      protocol: TCP
+    readinessProbe:
+      exec:
+        command:
+        - /bin/sh
+        - -i
+        - -c
+        - psql -h 127.0.0.1 -U ${POSTGRESQL_USER} -q -d ${POSTGRESQL_DATABASE} -c
+          'SELECT 1'
+      failureThreshold: 10
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        memory: 512Mi
+    securityContext:
+      capabilities:
+        drop:
+        - KILL
+        - MKNOD
+        - SETGID
+        - SETUID
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/lib/pgsql/data
+      name: gogs-postgres-data
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: gogs-token-7vcfx
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: gogs-dockercfg-25qjl
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    seLinuxOptions:
+      level: s0:c11,c10
+  serviceAccount: gogs
+  serviceAccountName: gogs
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  volumes:
+  - name: gogs-postgres-data
+    persistentVolumeClaim:
+      claimName: gogs-postgres-data
+  - name: gogs-token-7vcfx
+    secret:
+      defaultMode: 420
+      secretName: gogs-token-7vcfx
+status:
+  phase: Pending
+  qosClass: Burstable

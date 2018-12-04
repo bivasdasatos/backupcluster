@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+    openshift.io/host.generated: "true"
+  creationTimestamp: null
+  labels:
+    app: sample-sb-demo
+  name: sample-sb-demo
+spec:
+  host: sample-sb-demo-poc-fuse-springboot-demo-v2.apps01.amosdemo.io
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: sample-sb-demo
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-12-03T15:08:41Z
+      status: "True"
+      type: Admitted
+    host: sample-sb-demo-poc-fuse-springboot-demo-v2.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    metrics-infra: hawkular-cassandra
+    name: hawkular-cassandra
+  name: hawkular-cassandra-nodes
+subsets:
+- addresses:
+  - ip: 10.129.0.67
+    nodeName: amos01-infra001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: hawkular-cassandra-1-4z8p5
+      namespace: openshift-infra
+      resourceVersion: "3395617"
+      uid: 114a4754-ed67-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: ssl-port
+    port: 7001
+    protocol: TCP
+  - name: cql-port
+    port: 9042
+    protocol: TCP
+  - name: tcp-port
+    port: 7000
+    protocol: TCP

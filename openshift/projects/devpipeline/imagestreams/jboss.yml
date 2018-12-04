@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ImageStream
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewBuild
+  creationTimestamp: null
+  generation: 8
+  labels:
+    build: jboss
+  name: jboss
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/devpipeline/jboss:12
+    generation: 3
+    importPolicy: {}
+    name: "12"
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/devpipeline/jboss:13
+    generation: 4
+    importPolicy: {}
+    name: "13"
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/devpipeline/jboss:15
+    generation: 5
+    importPolicy: {}
+    name: "15"
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/devpipeline/jboss:16
+    generation: 6
+    importPolicy: {}
+    name: "16"
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/devpipeline/jboss:17
+    generation: 7
+    importPolicy: {}
+    name: "17"
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/devpipeline/jboss:18
+    generation: 8
+    importPolicy: {}
+    name: "18"
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/devpipeline/jboss:jenkins-1-ffj5d_10
+    generation: 2
+    importPolicy: {}
+    name: jenkins-1-ffj5d_10
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/devpipeline/jboss:latest
+    generation: null
+    importPolicy: {}
+    name: latest
+    referencePolicy:
+      type: ""
+status:
+  dockerImageRepository: ""

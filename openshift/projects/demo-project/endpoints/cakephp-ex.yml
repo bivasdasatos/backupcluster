@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: cakephp-ex
+  name: cakephp-ex
+subsets:
+- addresses:
+  - ip: 10.131.1.91
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: cakephp-ex-2-mdb7r
+      namespace: demo-project
+      resourceVersion: "5628954"
+      uid: 2acd85d2-f486-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP

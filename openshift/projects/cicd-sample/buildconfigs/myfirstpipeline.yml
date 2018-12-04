@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    pipeline.alpha.openshift.io/uses: '[{"name": "customer-payment", "namespace":
+      "", "kind": "DeploymentConfig"}]'
+  creationTimestamp: null
+  labels:
+    name: myfirstpipeline
+  name: myfirstpipeline
+spec:
+  nodeSelector: {}
+  output: {}
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    type: None
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        node() {
+        stage 'build'
+        openshiftBuild(buildConfig: 'customer-payment', showBuildLogs: 'true')
+        stage 'deploy'
+        openshiftDeploy(deploymentConfig: 'customer-payment')
+        openshiftScale(deploymentConfig: 'customer-payment',replicaCount: '2')
+        }
+    type: JenkinsPipeline
+  triggers:
+  - github:
+      secret: secret101
+    type: GitHub
+  - generic:
+      secret: secret101
+    type: Generic
+status:
+  lastVersion: 0

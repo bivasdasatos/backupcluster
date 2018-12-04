@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tomcat
+  name: tomcat
+subsets:
+- addresses:
+  - ip: 10.131.0.198
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: tomcat-4-4454b
+      namespace: test
+      resourceVersion: "5628969"
+      uid: 4f352fa8-f30c-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP

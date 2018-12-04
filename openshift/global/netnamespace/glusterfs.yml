@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: NetNamespace
+metadata:
+  creationTimestamp: null
+  name: glusterfs
+netid: 13308246
+netname: glusterfs

@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    openshift.io/deployer-pod.completed-at: 2018-11-13 05:48:42 +0000 UTC
+    openshift.io/deployer-pod.created-at: 2018-11-13 05:48:00 +0000 UTC
+    openshift.io/deployer-pod.name: gogs-postgresql-1-deploy
+    openshift.io/deployment-config.latest-version: "1"
+    openshift.io/deployment-config.name: gogs-postgresql
+    openshift.io/deployment.phase: Complete
+    openshift.io/deployment.replicas: "1"
+    openshift.io/deployment.status-reason: config change
+    openshift.io/encoded-deployment-config: |
+      {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"gogs-postgresql","namespace":"cicd","selfLink":"/apis/apps.openshift.io/v1/namespaces/cicd/deploymentconfigs/gogs-postgresql","uid":"ae073205-e707-11e8-b839-0aa0c5b29fe8","resourceVersion":"1663909","generation":2,"creationTimestamp":"2018-11-13T05:48:00Z","labels":{"app":"gogs"},"annotations":{"description":"Defines how to deploy the database"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["postgresql"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"postgresql:9.5"},"lastTriggeredImage":"registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:eb7c6fa06fce6d4efc55b7311dd45797a26bd4d8ec4648056ec068b7a4653ec8"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"name":"gogs-postgresql"},"template":{"metadata":{"name":"gogs-postgresql","creationTimestamp":null,"labels":{"name":"gogs-postgresql"}},"spec":{"volumes":[{"name":"gogs-postgres-data","persistentVolumeClaim":{"claimName":"gogs-postgres-data"}}],"containers":[{"name":"postgresql","image":"registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:eb7c6fa06fce6d4efc55b7311dd45797a26bd4d8ec4648056ec068b7a4653ec8","ports":[{"containerPort":5432,"protocol":"TCP"}],"env":[{"name":"POSTGRESQL_USER","value":"gogs"},{"name":"POSTGRESQL_PASSWORD","value":"gogs"},{"name":"POSTGRESQL_DATABASE","value":"gogs"},{"name":"POSTGRESQL_MAX_CONNECTIONS","value":"100"},{"name":"POSTGRESQL_SHARED_BUFFERS","value":"12MB"},{"name":"POSTGRESQL_ADMIN_PASSWORD","value":"Q8JPaCuw"}],"resources":{"limits":{"memory":"512Mi"}},"volumeMounts":[{"name":"gogs-postgres-data","mountPath":"/var/lib/pgsql/data"}],"livenessProbe":{"tcpSocket":{"port":5432},"initialDelaySeconds":30,"timeoutSeconds":1,"periodSeconds":20,"successThreshold":1,"failureThreshold":10},"readinessProbe":{"exec":{"command":["/bin/sh","-i","-c","psql -h 127.0.0.1 -U ${POSTGRESQL_USER} -q -d ${POSTGRESQL_DATABASE} -c 'SELECT 1'"]},"initialDelaySeconds":5,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":10},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","serviceAccountName":"gogs","serviceAccount":"gogs","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":0,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]}}}
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: gogs
+    openshift.io/deployment-config.name: gogs-postgresql
+  name: gogs-postgresql-1
+  ownerReferences:
+  - apiVersion: apps.openshift.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DeploymentConfig
+    name: gogs-postgresql
+    uid: ae073205-e707-11e8-b839-0aa0c5b29fe8
+spec:
+  replicas: 1
+  selector:
+    deployment: gogs-postgresql-1
+    deploymentconfig: gogs-postgresql
+    name: gogs-postgresql
+  template:
+    metadata:
+      annotations:
+        openshift.io/deployment-config.latest-version: "1"
+        openshift.io/deployment-config.name: gogs-postgresql
+        openshift.io/deployment.name: gogs-postgresql-1
+      creationTimestamp: null
+      labels:
+        deployment: gogs-postgresql-1
+        deploymentconfig: gogs-postgresql
+        name: gogs-postgresql
+    spec:
+      containers:
+      - env:
+        - name: POSTGRESQL_USER
+          value: gogs
+        - name: POSTGRESQL_PASSWORD
+          value: gogs
+        - name: POSTGRESQL_DATABASE
+          value: gogs
+        - name: POSTGRESQL_MAX_CONNECTIONS
+          value: "100"
+        - name: POSTGRESQL_SHARED_BUFFERS
+          value: 12MB
+        - name: POSTGRESQL_ADMIN_PASSWORD
+          value: Q8JPaCuw
+        image: registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:eb7c6fa06fce6d4efc55b7311dd45797a26bd4d8ec4648056ec068b7a4653ec8
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 10
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          successThreshold: 1
+          tcpSocket:
+            port: 5432
+          timeoutSeconds: 1
+        name: postgresql
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -i
+            - -c
+            - psql -h 127.0.0.1 -U ${POSTGRESQL_USER} -q -d ${POSTGRESQL_DATABASE}
+              -c 'SELECT 1'
+          failureThreshold: 10
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 512Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/pgsql/data
+          name: gogs-postgres-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: gogs
+      serviceAccountName: gogs
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: gogs-postgres-data
+        persistentVolumeClaim:
+          claimName: gogs-postgres-data
+status:
+  replicas: 0

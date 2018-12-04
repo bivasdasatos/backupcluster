@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  labels:
+    app: php
+  name: php
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: php:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: https://github.com/sudhirkr448/simple-php-website.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: php:7.1
+        namespace: openshift
+    type: Source
+  triggers:
+  - imageChange: {}
+    type: ImageChange
+  - type: ConfigChange
+  - generic:
+      secret: ccbc0ae46e1b6e67
+    type: Generic
+  - github:
+      secret: ae1a544ee7f659f1
+    type: GitHub
+status:
+  lastVersion: 0

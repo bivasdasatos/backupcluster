@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  creationTimestamp: null
+  labels:
+    glusterfs: heketi-storage-route
+    heketi: storage-route
+  name: heketi-storage
+spec:
+  host: heketi-storage-glusterfs.apps01.amosdemo.io
+  to:
+    kind: Service
+    name: heketi-storage
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-11-01T06:39:43Z
+      status: "True"
+      type: Admitted
+    host: heketi-storage-glusterfs.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None

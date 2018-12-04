@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    description: Route for SonarQube's http service.
+    openshift.io/generated-by: OpenShiftNewApp
+    openshift.io/host.generated: "true"
+  creationTimestamp: null
+  labels:
+    app: sonarqube
+  name: sonarqube
+spec:
+  host: sonarqube-cicd.apps01.amosdemo.io
+  to:
+    kind: Service
+    name: sonarqube
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-11-13T05:50:34Z
+      status: "True"
+      type: Admitted
+    host: sonarqube-cicd.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None

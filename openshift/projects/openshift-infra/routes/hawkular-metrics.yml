@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Route","metadata":{"annotations":{},"labels":{"metrics-infra":"hawkular-metrics"},"name":"hawkular-metrics","namespace":"openshift-infra"},"spec":{"host":"hawkular-metrics.apps01.amosdemo.io","tls":{"destinationCACertificate":"-----BEGIN CERTIFICATE-----\nMIIC5jCCAc6gAwIBAgIBATANBgkqhkiG9w0BAQsFADAkMSIwIAYDVQQDDBltZXRy\naWNzLXNpZ25lckAxNTQyNzg4NjIyMB4XDTE4MTEyMTA4MjQwNloXDTIzMTEyMDA4\nMjQwN1owJDEiMCAGA1UEAwwZbWV0cmljcy1zaWduZXJAMTU0Mjc4ODYyMjCCASIw\nDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALeuNDycxN5xnhKUitOUvelI9k0d\n7ccRp88HsQ4vHxwL+DDFl6ilIaBQ3ztegOEbP5HJ/J7OXVg9d+5p2L9pynqumy/g\nOG1u+wW66uiHfJd//70tNBmbMYXKFCmbjS/VQvPeUJWwnLbTpqB1g8GvhMOCYal2\nBXTP+/RlgkEk125HPQH+UY8i9PeimxR1JGhpibf0jprumv0I62a0AnHLBpXBjlU+\nmQTZF7KS+a6pK3Mg7T7CMsgM7sAds0TNO+FBqC2mgYWqwlWJKbSXusOtKGkCBQYU\nph8uT/91bNIBH5MPPhB4iGWb3niu4xnQz4+4mwe+NW9VRTQgaC+6soJPhdsCAwEA\nAaMjMCEwDgYDVR0PAQH/BAQDAgKkMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcN\nAQELBQADggEBADDJP+yu9ipqjEiU1mswD+u2O/TYRg2JwIfvMtRROj4mMJD2/R8g\nhD9/HUdkV9tYIsVCRNAE1eb/7XRyoVwao6MogXZK2U0FMhqqUqeqdZJ+F9Qjot1N\neAi8WNl38PKHwCREVR9juA9DeOXoZQPEP/CazkCzRMav9XFUmhAKAeHySA2UOdyV\nNFqwr1JxYFenKb1xgk6Hu4XfGXQZlCnyw4U4TANpQXhfIEOXCp8d9k2lpkhuBFHE\n2YvA7ultlJnpfi/kL9r9jKAcbPHLxi3E2AKYOaTuAClAVpEVWIhFqK0a6gBOXBwF\nArskfRBM/u1pgZRM8WPozDs67iXuWVmg4LI=\n-----END CERTIFICATE-----\n","termination":"reencrypt"},"to":{"kind":"Service","name":"hawkular-metrics"}}}
+  creationTimestamp: null
+  labels:
+    metrics-infra: hawkular-metrics
+  name: hawkular-metrics
+spec:
+  host: hawkular-metrics.apps01.amosdemo.io
+  tls:
+    destinationCACertificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIC5jCCAc6gAwIBAgIBATANBgkqhkiG9w0BAQsFADAkMSIwIAYDVQQDDBltZXRy
+      aWNzLXNpZ25lckAxNTQyNzg4NjIyMB4XDTE4MTEyMTA4MjQwNloXDTIzMTEyMDA4
+      MjQwN1owJDEiMCAGA1UEAwwZbWV0cmljcy1zaWduZXJAMTU0Mjc4ODYyMjCCASIw
+      DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALeuNDycxN5xnhKUitOUvelI9k0d
+      7ccRp88HsQ4vHxwL+DDFl6ilIaBQ3ztegOEbP5HJ/J7OXVg9d+5p2L9pynqumy/g
+      OG1u+wW66uiHfJd//70tNBmbMYXKFCmbjS/VQvPeUJWwnLbTpqB1g8GvhMOCYal2
+      BXTP+/RlgkEk125HPQH+UY8i9PeimxR1JGhpibf0jprumv0I62a0AnHLBpXBjlU+
+      mQTZF7KS+a6pK3Mg7T7CMsgM7sAds0TNO+FBqC2mgYWqwlWJKbSXusOtKGkCBQYU
+      ph8uT/91bNIBH5MPPhB4iGWb3niu4xnQz4+4mwe+NW9VRTQgaC+6soJPhdsCAwEA
+      AaMjMCEwDgYDVR0PAQH/BAQDAgKkMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcN
+      AQELBQADggEBADDJP+yu9ipqjEiU1mswD+u2O/TYRg2JwIfvMtRROj4mMJD2/R8g
+      hD9/HUdkV9tYIsVCRNAE1eb/7XRyoVwao6MogXZK2U0FMhqqUqeqdZJ+F9Qjot1N
+      eAi8WNl38PKHwCREVR9juA9DeOXoZQPEP/CazkCzRMav9XFUmhAKAeHySA2UOdyV
+      NFqwr1JxYFenKb1xgk6Hu4XfGXQZlCnyw4U4TANpQXhfIEOXCp8d9k2lpkhuBFHE
+      2YvA7ultlJnpfi/kL9r9jKAcbPHLxi3E2AKYOaTuAClAVpEVWIhFqK0a6gBOXBwF
+      ArskfRBM/u1pgZRM8WPozDs67iXuWVmg4LI=
+      -----END CERTIFICATE-----
+    termination: reencrypt
+  to:
+    kind: Service
+    name: hawkular-metrics
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-11-01T09:58:55Z
+      status: "True"
+      type: Admitted
+    host: hawkular-metrics.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None

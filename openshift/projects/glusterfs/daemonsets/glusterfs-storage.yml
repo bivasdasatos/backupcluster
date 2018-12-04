@@ -1,0 +1,160 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  annotations:
+    description: GlusterFS DaemonSet
+    tags: glusterfs
+  creationTimestamp: null
+  generation: 1
+  labels:
+    glusterfs: storage-daemonset
+  name: glusterfs-storage
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      glusterfs: storage-pod
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        glusterfs: storage-pod
+        glusterfs-node: pod
+      name: glusterfs-storage
+    spec:
+      containers:
+      - env:
+        - name: GB_GLFS_LRU_COUNT
+          value: "15"
+        - name: TCMU_LOGDIR
+          value: /var/log/glusterfs/gluster-block
+        - name: GB_LOGDIR
+          value: /var/log/glusterfs/gluster-block
+        image: rhgs3/rhgs-server-rhel7:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - systemctl status glusterd.service
+          failureThreshold: 50
+          initialDelaySeconds: 40
+          periodSeconds: 25
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: glusterfs
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - systemctl status glusterd.service
+          failureThreshold: 50
+          initialDelaySeconds: 40
+          periodSeconds: 25
+          successThreshold: 1
+          timeoutSeconds: 3
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          capabilities: {}
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/heketi
+          name: glusterfs-heketi
+        - mountPath: /run
+          name: glusterfs-run
+        - mountPath: /run/lvm
+          name: glusterfs-lvm
+        - mountPath: /etc/glusterfs
+          name: glusterfs-etc
+        - mountPath: /var/log/glusterfs
+          name: glusterfs-logs
+        - mountPath: /var/lib/glusterd
+          name: glusterfs-config
+        - mountPath: /dev
+          name: glusterfs-dev
+        - mountPath: /var/lib/misc/glusterfsd
+          name: glusterfs-misc
+        - mountPath: /sys/fs/cgroup
+          name: glusterfs-cgroup
+          readOnly: true
+        - mountPath: /etc/ssl
+          name: glusterfs-ssl
+          readOnly: true
+        - mountPath: /usr/lib/modules
+          name: kernel-modules
+          readOnly: true
+        - mountPath: /etc/target
+          name: glusterfs-target
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      nodeSelector:
+        glusterfs: storage-host
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /var/lib/heketi
+          type: ""
+        name: glusterfs-heketi
+      - emptyDir: {}
+        name: glusterfs-run
+      - hostPath:
+          path: /run/lvm
+          type: ""
+        name: glusterfs-lvm
+      - hostPath:
+          path: /etc/glusterfs
+          type: ""
+        name: glusterfs-etc
+      - hostPath:
+          path: /var/log/glusterfs
+          type: ""
+        name: glusterfs-logs
+      - hostPath:
+          path: /var/lib/glusterd
+          type: ""
+        name: glusterfs-config
+      - hostPath:
+          path: /dev
+          type: ""
+        name: glusterfs-dev
+      - hostPath:
+          path: /var/lib/misc/glusterfsd
+          type: ""
+        name: glusterfs-misc
+      - hostPath:
+          path: /sys/fs/cgroup
+          type: ""
+        name: glusterfs-cgroup
+      - hostPath:
+          path: /etc/ssl
+          type: ""
+        name: glusterfs-ssl
+      - hostPath:
+          path: /usr/lib/modules
+          type: ""
+        name: kernel-modules
+      - hostPath:
+          path: /etc/target
+          type: ""
+        name: glusterfs-target
+  templateGeneration: 1
+  updateStrategy:
+    type: OnDelete
+status:
+  currentNumberScheduled: 3
+  desiredNumberScheduled: 3
+  numberAvailable: 3
+  numberMisscheduled: 0
+  numberReady: 3
+  observedGeneration: 1
+  updatedNumberScheduled: 3

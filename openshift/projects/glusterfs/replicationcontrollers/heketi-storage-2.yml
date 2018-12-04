@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    openshift.io/deployer-pod.completed-at: 2018-11-20 11:18:03 +0000 UTC
+    openshift.io/deployer-pod.created-at: 2018-11-20 11:17:18 +0000 UTC
+    openshift.io/deployer-pod.name: heketi-storage-2-deploy
+    openshift.io/deployment-config.latest-version: "2"
+    openshift.io/deployment-config.name: heketi-storage
+    openshift.io/deployment.phase: Complete
+    openshift.io/deployment.replicas: "1"
+    openshift.io/deployment.status-reason: manual change
+    openshift.io/encoded-deployment-config: |
+      {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"heketi-storage","namespace":"glusterfs","selfLink":"/apis/apps.openshift.io/v1/namespaces/glusterfs/deploymentconfigs/heketi-storage","uid":"d2962f72-dd9b-11e8-b362-0aa0c5b29fe8","resourceVersion":"3210983","generation":2,"creationTimestamp":"2018-11-01T06:03:15Z","labels":{"glusterfs":"heketi-storage-dc","heketi":"storage-dc"},"annotations":{"description":"Defines how to deploy Heketi"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"glusterfs":"heketi-storage-pod"},"template":{"metadata":{"name":"heketi-storage","creationTimestamp":null,"labels":{"glusterfs":"heketi-storage-pod","heketi":"storage-pod"}},"spec":{"volumes":[{"name":"db","glusterfs":{"endpoints":"heketi-db-storage-endpoints","path":"heketidbstorage"}},{"name":"config","secret":{"secretName":"heketi-storage-config-secret","defaultMode":420}}],"containers":[{"name":"heketi","image":"rhgs3/rhgs-volmanager-rhel7:latest","ports":[{"containerPort":8080,"protocol":"TCP"}],"env":[{"name":"HEKETI_USER_KEY","value":"CabUJlQR2QKshq+kxTcGVUwGq9Puc9HbfdL6y41bRb0="},{"name":"HEKETI_ADMIN_KEY","value":"TmkSkl56jWhvo0dAsIlfFo1XS24wJKgqWwDieG2NdxE="},{"name":"HEKETI_EXECUTOR","value":"kubernetes"},{"name":"HEKETI_FSTAB","value":"/var/lib/heketi/fstab"},{"name":"HEKETI_SNAPSHOT_LIMIT","value":"14"},{"name":"HEKETI_KUBE_GLUSTER_DAEMONSET","value":"1"},{"name":"HEKETI_IGNORE_STALE_OPERATIONS","value":"true"}],"resources":{},"volumeMounts":[{"name":"db","mountPath":"/var/lib/heketi"},{"name":"config","mountPath":"/etc/heketi"}],"livenessProbe":{"httpGet":{"path":"/hello","port":8080,"scheme":"HTTP"},"initialDelaySeconds":30,"timeoutSeconds":3,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"readinessProbe":{"httpGet":{"path":"/hello","port":8080,"scheme":"HTTP"},"initialDelaySeconds":3,"timeoutSeconds":3,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","serviceAccountName":"heketi-storage-service-account","serviceAccount":"heketi-storage-service-account","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":1,"replicas":1,"updatedReplicas":1,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"manual change","causes":[{"type":"Manual"}]},"conditions":[{"type":"Progressing","status":"True","lastUpdateTime":"2018-11-01T06:03:32Z","lastTransitionTime":"2018-11-01T06:03:18Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"heketi-storage-1\" successfully rolled out"},{"type":"Available","status":"True","lastUpdateTime":"2018-11-14T09:31:32Z","lastTransitionTime":"2018-11-14T09:31:32Z","message":"Deployment config has minimum availability."}],"readyReplicas":1}}
+  creationTimestamp: null
+  generation: 1
+  labels:
+    glusterfs: heketi-storage-dc
+    heketi: storage-dc
+    openshift.io/deployment-config.name: heketi-storage
+  name: heketi-storage-2
+  ownerReferences:
+  - apiVersion: apps.openshift.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DeploymentConfig
+    name: heketi-storage
+    uid: d2962f72-dd9b-11e8-b362-0aa0c5b29fe8
+spec:
+  replicas: 1
+  selector:
+    deployment: heketi-storage-2
+    deploymentconfig: heketi-storage
+    glusterfs: heketi-storage-pod
+  template:
+    metadata:
+      annotations:
+        openshift.io/deployment-config.latest-version: "2"
+        openshift.io/deployment-config.name: heketi-storage
+        openshift.io/deployment.name: heketi-storage-2
+      creationTimestamp: null
+      labels:
+        deployment: heketi-storage-2
+        deploymentconfig: heketi-storage
+        glusterfs: heketi-storage-pod
+        heketi: storage-pod
+    spec:
+      containers:
+      - env:
+        - name: HEKETI_USER_KEY
+          value: CabUJlQR2QKshq+kxTcGVUwGq9Puc9HbfdL6y41bRb0=
+        - name: HEKETI_ADMIN_KEY
+          value: TmkSkl56jWhvo0dAsIlfFo1XS24wJKgqWwDieG2NdxE=
+        - name: HEKETI_EXECUTOR
+          value: kubernetes
+        - name: HEKETI_FSTAB
+          value: /var/lib/heketi/fstab
+        - name: HEKETI_SNAPSHOT_LIMIT
+          value: "14"
+        - name: HEKETI_KUBE_GLUSTER_DAEMONSET
+          value: "1"
+        - name: HEKETI_IGNORE_STALE_OPERATIONS
+          value: "true"
+        image: rhgs3/rhgs-volmanager-rhel7:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /hello
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: heketi
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /hello
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/heketi
+          name: db
+        - mountPath: /etc/heketi
+          name: config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: heketi-storage-service-account
+      serviceAccountName: heketi-storage-service-account
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - glusterfs:
+          endpoints: heketi-db-storage-endpoints
+          path: heketidbstorage
+        name: db
+      - name: config
+        secret:
+          defaultMode: 420
+          secretName: heketi-storage-config-secret
+status:
+  replicas: 0

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  labels:
+    app: javademoapp
+  name: javademoapp
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: 9998-tcp
+    port: 9998
+    protocol: TCP
+    targetPort: 9998
+  selector:
+    deploymentconfig: javademoapp
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

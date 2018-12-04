@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    AccessKey: glusterblk-279b4dd1-8d21-48cb-a79e-d58f62d258a5-secret
+    AccessKeyNs: glusterfs
+    Blockstring: url:http://heketi-storage.glusterfs.svc.cluster.local:8080,user:admin,secret:heketi-storage-admin-secret-block,secretnamespace:glusterfs
+    Description: 'Gluster-external: Dynamically provisioned PV'
+    gluster.org/type: block
+    gluster.org/volume-id: f3cf06b230f870bca87b73329b0ab499
+    glusterBlkProvIdentity: gluster.org/glusterblock
+    glusterBlockShare: blockvol_f3cf06b230f870bca87b73329b0ab499
+    kubernetes.io/createdby: heketi
+    pv.kubernetes.io/provisioned-by: gluster.org/glusterblock
+    v2.0.0: v2.0.0
+  creationTimestamp: null
+  name: pvc-0bcbc8e1-eca4-11e8-ba2b-0aa0c5b29fe8
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: claim1
+    namespace: glusterfs
+    resourceVersion: "3581978"
+    uid: 0bcbc8e1-eca4-11e8-ba2b-0aa0c5b29fe8
+  iscsi:
+    chapAuthSession: true
+    fsType: xfs
+    iqn: iqn.2016-12.org.gluster-block:279b4dd1-8d21-48cb-a79e-d58f62d258a5
+    iscsiInterface: default
+    lun: 0
+    portals:
+    - 172.31.96.90
+    - 172.31.128.209
+    secretRef:
+      name: glusterblk-279b4dd1-8d21-48cb-a79e-d58f62d258a5-secret
+    targetPortal: 172.31.16.234
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: glusterblock-storage
+status: {}

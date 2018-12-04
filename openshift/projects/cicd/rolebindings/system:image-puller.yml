@@ -1,0 +1,14 @@
+apiVersion: v1
+groupNames: null
+kind: RoleBinding
+metadata:
+  creationTimestamp: null
+  name: system:image-puller
+roleRef:
+  name: system:image-puller
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: test
+userNames:
+- system:serviceaccount:test:default

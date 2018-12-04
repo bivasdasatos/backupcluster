@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  labels:
+    app: cakephp-ex
+  name: cakephp-ex
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: cakephp-ex:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: https://github.com/openshift/cakephp-ex.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: php:7.1
+        namespace: openshift
+    type: Source
+  triggers:
+  - imageChange: {}
+    type: ImageChange
+  - type: ConfigChange
+  - generic:
+      secret: 1e0593faa54ad986
+    type: Generic
+  - github:
+      secret: fb83c721009970ec
+    type: GitHub
+status:
+  lastVersion: 0

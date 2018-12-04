@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    logging-infra: support
+  name: logging-es
+subsets:
+- addresses:
+  - ip: 10.128.0.158
+    nodeName: amos01-master001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: logging-es-data-master-llgd3fuk-1-njh5b
+      namespace: logging
+      resourceVersion: "3616297"
+      uid: 62c0524c-ee40-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - port: 9200
+    protocol: TCP

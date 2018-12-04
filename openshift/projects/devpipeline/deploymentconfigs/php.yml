@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: php
+  name: php
+spec:
+  replicas: 1
+  selector:
+    deploymentconfig: php
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: php
+        deploymentconfig: php
+    spec:
+      containers:
+      - image: docker-registry.default.svc:5000/devpipeline/php@sha256:e5fe5da8b74077117df579e1c4a4b512aee3ab08cff4a130b4cfce88add9f4fc
+        imagePullPolicy: Always
+        name: php
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - php
+      from:
+        kind: ImageStreamTag
+        name: php:latest
+        namespace: devpipeline
+    type: ImageChange
+  - type: ConfigChange
+status:
+  availableReplicas: 0
+  latestVersion: 0
+  observedGeneration: 0
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0

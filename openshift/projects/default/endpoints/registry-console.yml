@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: registry-console
+    createdBy: registry-console-template
+    name: registry-console
+  name: registry-console
+subsets:
+- addresses:
+  - ip: 10.128.0.103
+    nodeName: amos01-master001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: registry-console-3-lpww7
+      namespace: default
+      resourceVersion: "5380850"
+      uid: 2bed1dba-e8b3-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: registry-console
+    port: 9090
+    protocol: TCP

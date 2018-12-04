@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/deployment-config.latest-version: "2"
+    openshift.io/deployment-config.name: php
+    openshift.io/deployment.name: php-2
+    openshift.io/scc: anyuid
+  creationTimestamp: null
+  generateName: php-2-
+  labels:
+    app: php
+    deployment: php-2
+    deploymentconfig: php
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicationController
+    name: php-2
+    uid: 5cf7b96c-e72e-11e8-b839-0aa0c5b29fe8
+spec:
+  containers:
+  - image: docker-registry.default.svc:5000/devpipeline/php@sha256:e5fe5da8b74077117df579e1c4a4b512aee3ab08cff4a130b4cfce88add9f4fc
+    imagePullPolicy: Always
+    name: php
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    - containerPort: 8443
+      protocol: TCP
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - MKNOD
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-jrtdk
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: default-dockercfg-ts7vt
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    seLinuxOptions:
+      level: s0:c9,c4
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - name: default-token-jrtdk
+    secret:
+      defaultMode: 420
+      secretName: default-token-jrtdk
+status:
+  phase: Pending
+  qosClass: BestEffort

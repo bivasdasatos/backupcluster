@@ -1,0 +1,16 @@
+apiVersion: v1
+groupNames: null
+kind: RoleBinding
+metadata:
+  creationTimestamp: null
+  name: admin
+roleRef:
+  name: admin
+subjects:
+- kind: User
+  name: svbadmin1
+- kind: User
+  name: svbadmin1.1
+userNames:
+- svbadmin1
+- svbadmin1.1

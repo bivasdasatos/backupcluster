@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/build.name: wlpapp-1
+    openshift.io/scc: privileged
+  creationTimestamp: null
+  labels:
+    openshift.io/build.name: wlpapp-1
+  name: wlpapp-1-build
+  ownerReferences:
+  - apiVersion: build.openshift.io/v1
+    controller: true
+    kind: Build
+    name: wlpapp-1
+    uid: 0b33a4b0-f783-11e8-ba2b-0aa0c5b29fe8
+spec:
+  containers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-docker-build
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"wlpapp-1","namespace":"cicd-demo","selfLink":"/apis/build.openshift.io/v1/namespaces/cicd-demo/builds/wlpapp-1","uid":"0b33a4b0-f783-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"5625851","creationTimestamp":"2018-12-04T05:11:23Z","labels":{"build":"wlpapp","buildconfig":"wlpapp","openshift.io/build-config.name":"wlpapp","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"wlpapp","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"wlpapp","uid":"0b2f769b-f783-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Dockerfile","dockerfile":"FROM websphere-liberty:latest\nRUN mkdir -p /opt/ibm/wlp/usr/servers/defaultServer\nRUN mkdir -p /opt/ibm/wlp/usr/servers/defaultServer/dropins\n\nRUN mkdir -p /opt/ibm/wlp/output/defaultServer/workarea \\\n        \u0026\u0026 chmod -R g+rw /opt/ibm/wlp/output/defaultServer/workarea\n\nRUN mkdir -p /opt/ibm/wlp/postgressjar \\\n        \u0026\u0026 chmod -R g+rw /opt/ibm/wlp/postgressjar\n\nRUN chmod -R g+rw $WLP_OUTPUT_DIR/defaultServer/logs\n#RUN installUtility install jdbc-4.1\n#RUN installUtility install servlet-3.1\n\n#COPY ./webs/web/target/war/interruptions.war /opt/ibm/wlp/usr/servers/defaultServer/dropins\n#COPY ./webs/web/target/war/server.xml /opt/ibm/wlp/usr/servers/defaultServer\n#COPY ./webs/web/target/war/postgresql-9.1-901-1.jdbc4.jar /opt/ibm/wlp/postgressjar\n\nCOPY interruptions.war /opt/ibm/wlp/usr/servers/defaultServer/dropins\nCOPY server.xml /opt/ibm/wlp/usr/servers/defaultServer\nCOPY postgresql-9.1-901-1.jdbc4.jar /opt/ibm/wlp/postgressjar\nCMD [\"/opt/ibm/wlp/bin/server\", \"run\", \"defaultServer\"]\n"},"strategy":{"type":"Docker","dockerStrategy":{"from":{"kind":"DockerImage","name":"websphere-liberty@sha256:9cbad76b3f86fa9d942ff17f2b865d6104b3d4f67c8d32084b4bfd014984d9c7"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/cicd-demo/wlpapp:latest"},"pushSecret":{"name":"builder-dockercfg-fznjl"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"websphere-liberty@sha256:9cbad76b3f86fa9d942ff17f2b865d6104b3d4f67c8d32084b4bfd014984d9c7","fromRef":{"kind":"ImageStreamTag","namespace":"cicd-demo","name":"websphere-liberty:latest"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/cicd-demo/wlpapp:latest","config":{"kind":"BuildConfig","namespace":"cicd-demo","name":"wlpapp"},"output":{}}}
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: PUSH_DOCKERCFG_PATH
+      value: /var/run/secrets/openshift.io/push
+    image: openshift3/ose-docker-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: docker-build
+    resources: {}
+    securityContext:
+      privileged: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/docker.sock
+      name: docker-socket
+    - mountPath: /var/run/crio/crio.sock
+      name: crio-socket
+    - mountPath: /var/run/secrets/openshift.io/push
+      name: builder-dockercfg-fznjl-push
+      readOnly: true
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-4xwsh
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: builder-dockercfg-fznjl
+  initContainers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-manage-dockerfile
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"wlpapp-1","namespace":"cicd-demo","selfLink":"/apis/build.openshift.io/v1/namespaces/cicd-demo/builds/wlpapp-1","uid":"0b33a4b0-f783-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"5625851","creationTimestamp":"2018-12-04T05:11:23Z","labels":{"build":"wlpapp","buildconfig":"wlpapp","openshift.io/build-config.name":"wlpapp","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"wlpapp","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"wlpapp","uid":"0b2f769b-f783-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Dockerfile","dockerfile":"FROM websphere-liberty:latest\nRUN mkdir -p /opt/ibm/wlp/usr/servers/defaultServer\nRUN mkdir -p /opt/ibm/wlp/usr/servers/defaultServer/dropins\n\nRUN mkdir -p /opt/ibm/wlp/output/defaultServer/workarea \\\n        \u0026\u0026 chmod -R g+rw /opt/ibm/wlp/output/defaultServer/workarea\n\nRUN mkdir -p /opt/ibm/wlp/postgressjar \\\n        \u0026\u0026 chmod -R g+rw /opt/ibm/wlp/postgressjar\n\nRUN chmod -R g+rw $WLP_OUTPUT_DIR/defaultServer/logs\n#RUN installUtility install jdbc-4.1\n#RUN installUtility install servlet-3.1\n\n#COPY ./webs/web/target/war/interruptions.war /opt/ibm/wlp/usr/servers/defaultServer/dropins\n#COPY ./webs/web/target/war/server.xml /opt/ibm/wlp/usr/servers/defaultServer\n#COPY ./webs/web/target/war/postgresql-9.1-901-1.jdbc4.jar /opt/ibm/wlp/postgressjar\n\nCOPY interruptions.war /opt/ibm/wlp/usr/servers/defaultServer/dropins\nCOPY server.xml /opt/ibm/wlp/usr/servers/defaultServer\nCOPY postgresql-9.1-901-1.jdbc4.jar /opt/ibm/wlp/postgressjar\nCMD [\"/opt/ibm/wlp/bin/server\", \"run\", \"defaultServer\"]\n"},"strategy":{"type":"Docker","dockerStrategy":{"from":{"kind":"DockerImage","name":"websphere-liberty@sha256:9cbad76b3f86fa9d942ff17f2b865d6104b3d4f67c8d32084b4bfd014984d9c7"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/cicd-demo/wlpapp:latest"},"pushSecret":{"name":"builder-dockercfg-fznjl"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"websphere-liberty@sha256:9cbad76b3f86fa9d942ff17f2b865d6104b3d4f67c8d32084b4bfd014984d9c7","fromRef":{"kind":"ImageStreamTag","namespace":"cicd-demo","name":"websphere-liberty:latest"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/cicd-demo/wlpapp:latest","config":{"kind":"BuildConfig","namespace":"cicd-demo","name":"wlpapp"},"output":{}}}
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    image: openshift3/ose-docker-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: manage-dockerfile
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-4xwsh
+      readOnly: true
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: builder
+  serviceAccountName: builder
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - emptyDir: {}
+    name: buildworkdir
+  - hostPath:
+      path: /var/run/docker.sock
+      type: ""
+    name: docker-socket
+  - hostPath:
+      path: /var/run/crio/crio.sock
+      type: ""
+    name: crio-socket
+  - name: builder-dockercfg-fznjl-push
+    secret:
+      defaultMode: 384
+      secretName: builder-dockercfg-fznjl
+  - name: builder-token-4xwsh
+    secret:
+      defaultMode: 420
+      secretName: builder-token-4xwsh
+status:
+  phase: Pending
+  qosClass: BestEffort

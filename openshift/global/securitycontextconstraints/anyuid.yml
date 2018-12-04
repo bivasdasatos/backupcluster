@@ -1,0 +1,50 @@
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegedContainer: true
+allowedCapabilities: null
+allowedFlexVolumes: null
+apiVersion: v1
+defaultAddCapabilities: null
+fsGroup:
+  type: RunAsAny
+groups:
+- system:cluster-admins
+- system:authenticated
+kind: SecurityContextConstraints
+metadata:
+  annotations:
+    kubernetes.io/description: anyuid provides all features of the restricted SCC
+      but allows users to run with any UID and any GID.
+  creationTimestamp: null
+  name: anyuid
+priority: 10
+readOnlyRootFilesystem: false
+requiredDropCapabilities:
+- MKNOD
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: MustRunAs
+supplementalGroups:
+  type: RunAsAny
+users:
+- system:serviceaccount:devpipeline:default
+- system:serviceaccount:devpipeline:jenkins
+- system:serviceaccount:logging:jenkins
+- system:serviceaccount:devpipeline:jenkins-1-7zgld
+- system:serviceaccount:devpipeline:jenkins-a-5m2nk
+- system:serviceaccount:sample-springboot-app-project:jenkins-1-ql7wc
+- system:serviceaccount:test:default
+- system:serviceaccount:testsele:jenkins
+- system:serviceaccount:testsele:default
+- system:serviceaccount:cicd:sa
+volumes:
+- configMap
+- downwardAPI
+- emptyDir
+- persistentVolumeClaim
+- projected
+- secret

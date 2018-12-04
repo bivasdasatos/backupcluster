@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: NetNamespace
+metadata:
+  creationTimestamp: null
+  name: cicd-demo
+netid: 3286223
+netname: cicd-demo

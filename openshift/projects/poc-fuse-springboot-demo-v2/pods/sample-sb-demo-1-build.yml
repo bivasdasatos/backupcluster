@@ -1,0 +1,160 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/build.name: sample-sb-demo-1
+    openshift.io/scc: privileged
+  creationTimestamp: null
+  labels:
+    openshift.io/build.name: sample-sb-demo-1
+  name: sample-sb-demo-1-build
+  ownerReferences:
+  - apiVersion: build.openshift.io/v1
+    controller: true
+    kind: Build
+    name: sample-sb-demo-1
+    uid: 55074542-f70d-11e8-ba2b-0aa0c5b29fe8
+spec:
+  containers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-sti-build
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"sample-sb-demo-1","namespace":"poc-fuse-springboot-demo-v2","selfLink":"/apis/build.openshift.io/v1/namespaces/poc-fuse-springboot-demo-v2/builds/sample-sb-demo-1","uid":"55074542-f70d-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"5525188","creationTimestamp":"2018-12-03T15:08:46Z","labels":{"app":"sample-sb-demo","buildconfig":"sample-sb-demo","openshift.io/build-config.name":"sample-sb-demo","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"sample-sb-demo","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"sample-sb-demo","uid":"54ff3404-f70d-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://gitlab.com/aswinidas/online-payment-service.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift@sha256:78af15475eac13d2ff439b33a9c3bdd39147858a824c420e8042fd5f35adce15"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/poc-fuse-springboot-demo-v2/sample-sb-demo:latest"},"pushSecret":{"name":"builder-dockercfg-wmpcf"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Build configuration change"}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/poc-fuse-springboot-demo-v2/sample-sb-demo:latest","config":{"kind":"BuildConfig","namespace":"poc-fuse-springboot-demo-v2","name":"sample-sb-demo"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://gitlab.com/aswinidas/online-payment-service.git
+    - name: SOURCE_URI
+      value: https://gitlab.com/aswinidas/online-payment-service.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    - name: PUSH_DOCKERCFG_PATH
+      value: /var/run/secrets/openshift.io/push
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: sti-build
+    resources: {}
+    securityContext:
+      privileged: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/docker.sock
+      name: docker-socket
+    - mountPath: /var/run/crio/crio.sock
+      name: crio-socket
+    - mountPath: /var/run/secrets/openshift.io/push
+      name: builder-dockercfg-wmpcf-push
+      readOnly: true
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-r5jw6
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: builder-dockercfg-wmpcf
+  initContainers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-git-clone
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"sample-sb-demo-1","namespace":"poc-fuse-springboot-demo-v2","selfLink":"/apis/build.openshift.io/v1/namespaces/poc-fuse-springboot-demo-v2/builds/sample-sb-demo-1","uid":"55074542-f70d-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"5525188","creationTimestamp":"2018-12-03T15:08:46Z","labels":{"app":"sample-sb-demo","buildconfig":"sample-sb-demo","openshift.io/build-config.name":"sample-sb-demo","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"sample-sb-demo","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"sample-sb-demo","uid":"54ff3404-f70d-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://gitlab.com/aswinidas/online-payment-service.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift@sha256:78af15475eac13d2ff439b33a9c3bdd39147858a824c420e8042fd5f35adce15"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/poc-fuse-springboot-demo-v2/sample-sb-demo:latest"},"pushSecret":{"name":"builder-dockercfg-wmpcf"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Build configuration change"}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/poc-fuse-springboot-demo-v2/sample-sb-demo:latest","config":{"kind":"BuildConfig","namespace":"poc-fuse-springboot-demo-v2","name":"sample-sb-demo"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://gitlab.com/aswinidas/online-payment-service.git
+    - name: SOURCE_URI
+      value: https://gitlab.com/aswinidas/online-payment-service.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: git-clone
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-r5jw6
+      readOnly: true
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-manage-dockerfile
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"sample-sb-demo-1","namespace":"poc-fuse-springboot-demo-v2","selfLink":"/apis/build.openshift.io/v1/namespaces/poc-fuse-springboot-demo-v2/builds/sample-sb-demo-1","uid":"55074542-f70d-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"5525188","creationTimestamp":"2018-12-03T15:08:46Z","labels":{"app":"sample-sb-demo","buildconfig":"sample-sb-demo","openshift.io/build-config.name":"sample-sb-demo","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"sample-sb-demo","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"sample-sb-demo","uid":"54ff3404-f70d-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://gitlab.com/aswinidas/online-payment-service.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift@sha256:78af15475eac13d2ff439b33a9c3bdd39147858a824c420e8042fd5f35adce15"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/poc-fuse-springboot-demo-v2/sample-sb-demo:latest"},"pushSecret":{"name":"builder-dockercfg-wmpcf"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Build configuration change"}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/poc-fuse-springboot-demo-v2/sample-sb-demo:latest","config":{"kind":"BuildConfig","namespace":"poc-fuse-springboot-demo-v2","name":"sample-sb-demo"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://gitlab.com/aswinidas/online-payment-service.git
+    - name: SOURCE_URI
+      value: https://gitlab.com/aswinidas/online-payment-service.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: manage-dockerfile
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-r5jw6
+      readOnly: true
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: builder
+  serviceAccountName: builder
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - emptyDir: {}
+    name: buildworkdir
+  - hostPath:
+      path: /var/run/docker.sock
+      type: ""
+    name: docker-socket
+  - hostPath:
+      path: /var/run/crio/crio.sock
+      type: ""
+    name: crio-socket
+  - name: builder-dockercfg-wmpcf-push
+    secret:
+      defaultMode: 384
+      secretName: builder-dockercfg-wmpcf
+  - name: builder-token-r5jw6
+    secret:
+      defaultMode: 420
+      secretName: builder-token-r5jw6
+status:
+  phase: Pending
+  qosClass: BestEffort

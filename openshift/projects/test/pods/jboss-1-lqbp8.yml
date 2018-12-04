@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/deployment-config.latest-version: "1"
+    openshift.io/deployment-config.name: jboss
+    openshift.io/deployment.name: jboss-1
+    openshift.io/generated-by: OpenShiftNewApp
+    openshift.io/scc: anyuid
+  creationTimestamp: null
+  generateName: jboss-1-
+  labels:
+    app: jboss
+    deployment: jboss-1
+    deploymentconfig: jboss
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicationController
+    name: jboss-1
+    uid: 880f7e56-f6fa-11e8-ba2b-0aa0c5b29fe8
+spec:
+  containers:
+  - image: docker-registry.default.svc:5000/test/jboss@sha256:4ab2c3c00b410814092ee83ac9c7508af3c32080af859415c107e39f950490b3
+    imagePullPolicy: IfNotPresent
+    name: jboss
+    ports:
+    - containerPort: 8778
+      protocol: TCP
+    - containerPort: 8080
+      protocol: TCP
+    - containerPort: 8443
+      protocol: TCP
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - MKNOD
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-lzdwb
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: default-dockercfg-8rxls
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    seLinuxOptions:
+      level: s0:c10,c5
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - name: default-token-lzdwb
+    secret:
+      defaultMode: 420
+      secretName: default-token-lzdwb
+status:
+  phase: Pending
+  qosClass: BestEffort

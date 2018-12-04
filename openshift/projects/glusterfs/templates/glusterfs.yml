@@ -1,0 +1,169 @@
+apiVersion: v1
+kind: Template
+metadata:
+  annotations:
+    description: GlusterFS DaemonSet template
+    tags: glusterfs
+  creationTimestamp: null
+  labels:
+    glusterfs: template
+  name: glusterfs
+objects:
+- apiVersion: extensions/v1beta1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      description: GlusterFS DaemonSet
+      tags: glusterfs
+    labels:
+      glusterfs: ${CLUSTER_NAME}-daemonset
+    name: glusterfs-${CLUSTER_NAME}
+  spec:
+    selector:
+      matchLabels:
+        glusterfs: ${CLUSTER_NAME}-pod
+    template:
+      metadata:
+        labels:
+          glusterfs: ${CLUSTER_NAME}-pod
+          glusterfs-node: pod
+        name: glusterfs-${CLUSTER_NAME}
+      spec:
+        containers:
+        - env:
+          - name: GB_GLFS_LRU_COUNT
+            value: ${GB_GLFS_LRU_COUNT}
+          - name: TCMU_LOGDIR
+            value: ${TCMU_LOGDIR}
+          - name: GB_LOGDIR
+            value: /var/log/glusterfs/gluster-block
+          image: ${IMAGE_NAME}:${IMAGE_VERSION}
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - systemctl status glusterd.service
+            failureThreshold: 50
+            initialDelaySeconds: 40
+            periodSeconds: 25
+            successThreshold: 1
+            timeoutSeconds: 3
+          name: glusterfs
+          readinessProbe:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - systemctl status glusterd.service
+            failureThreshold: 50
+            initialDelaySeconds: 40
+            periodSeconds: 25
+            successThreshold: 1
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          securityContext:
+            capabilities: {}
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /var/lib/heketi
+            name: glusterfs-heketi
+          - mountPath: /run
+            name: glusterfs-run
+          - mountPath: /run/lvm
+            name: glusterfs-lvm
+          - mountPath: /etc/glusterfs
+            name: glusterfs-etc
+          - mountPath: /var/log/glusterfs
+            name: glusterfs-logs
+          - mountPath: /var/lib/glusterd
+            name: glusterfs-config
+          - mountPath: /dev
+            name: glusterfs-dev
+          - mountPath: /var/lib/misc/glusterfsd
+            name: glusterfs-misc
+          - mountPath: /sys/fs/cgroup
+            name: glusterfs-cgroup
+            readOnly: true
+          - mountPath: /etc/ssl
+            name: glusterfs-ssl
+            readOnly: true
+          - mountPath: /usr/lib/modules
+            name: kernel-modules
+            readOnly: true
+          - mountPath: /etc/target
+            name: glusterfs-target
+        dnsPolicy: ClusterFirst
+        hostNetwork: true
+        nodeSelector: ${{NODE_LABELS}}
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - hostPath:
+            path: /var/lib/heketi
+          name: glusterfs-heketi
+        - emptyDir: {}
+          name: glusterfs-run
+        - hostPath:
+            path: /run/lvm
+          name: glusterfs-lvm
+        - hostPath:
+            path: /etc/glusterfs
+          name: glusterfs-etc
+        - hostPath:
+            path: /var/log/glusterfs
+          name: glusterfs-logs
+        - hostPath:
+            path: /var/lib/glusterd
+          name: glusterfs-config
+        - hostPath:
+            path: /dev
+          name: glusterfs-dev
+        - hostPath:
+            path: /var/lib/misc/glusterfsd
+          name: glusterfs-misc
+        - hostPath:
+            path: /sys/fs/cgroup
+          name: glusterfs-cgroup
+        - hostPath:
+            path: /etc/ssl
+          name: glusterfs-ssl
+        - hostPath:
+            path: /usr/lib/modules
+          name: kernel-modules
+        - hostPath:
+            path: /etc/target
+          name: glusterfs-target
+parameters:
+- description: Labels which define the daemonset node selector. Must contain at least
+    one label of the format \'glusterfs=<CLUSTER_NAME>-host\'
+  displayName: Daemonset Node Labels
+  name: NODE_LABELS
+  value: '{ "glusterfs": "storage-host" }'
+- displayName: GlusterFS container image name
+  name: IMAGE_NAME
+  required: true
+- displayName: GlusterFS container image version
+  name: IMAGE_VERSION
+  required: true
+- description: A unique name to identify which heketi service manages this cluster,
+    useful for running multiple heketi instances
+  displayName: GlusterFS cluster name
+  name: CLUSTER_NAME
+  value: storage
+- description: This value is to set maximum number of block hosting volumes.
+  displayName: Maximum number of block hosting volumes
+  name: GB_GLFS_LRU_COUNT
+  required: true
+  value: "15"
+- description: This value is to set tcmu runner log directory
+  displayName: Tcmu runner log directory
+  name: TCMU_LOGDIR
+  required: true
+  value: /var/log/glusterfs/gluster-block

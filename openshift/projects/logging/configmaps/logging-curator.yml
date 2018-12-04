@@ -1,0 +1,29 @@
+apiVersion: v1
+data:
+  config.yaml: |
+    # Logging example curator config file
+
+    # to keep ops logs for a different duration:
+    .operations:
+      delete:
+        days: 5
+
+    # log deletion for glusterfs project
+    glusterfs:
+      delete:
+        days: 5
+
+    # log deletion for logging project
+    logging:
+      delete:
+        days: 5
+
+    .defaults:
+      delete:
+        days: 7
+      runhour: 02
+      runminute: 30
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: logging-curator

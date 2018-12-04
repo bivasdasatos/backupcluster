@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jenkins-persistent
+    template: jenkins-persistent-template
+  name: jenkins
+subsets:
+- addresses:
+  - ip: 10.131.0.154
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: jenkins-1-c9zfg
+      namespace: cicd
+      resourceVersion: "5650070"
+      uid: 96124790-f79c-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: web
+    port: 8080
+    protocol: TCP

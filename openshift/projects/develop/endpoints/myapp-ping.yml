@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: eap70-postgresql-persistent-s2i
+    application: myapp
+    template: eap70-postgresql-persistent-s2i
+    xpaas: 1.4.14
+  name: myapp-ping
+subsets: null

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    router: router
+  name: router
+subsets:
+- addresses:
+  - ip: 172.31.96.95
+    nodeName: amos01-infra001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: router-33-rlmv2
+      namespace: default
+      resourceVersion: "4917527"
+      uid: 9c6e9538-f45b-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: 1936-tcp
+    port: 1936
+    protocol: TCP
+  - name: 80-tcp
+    port: 80
+    protocol: TCP
+  - name: 443-tcp
+    port: 443
+    protocol: TCP

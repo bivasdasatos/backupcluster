@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: null
+  labels:
+    glusterblock: storage-provisioner-sa
+    glusterfs: block-storage-provisioner-sa
+  name: glusterblock-storage-provisioner

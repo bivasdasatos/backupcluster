@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    Description: 'Gluster-Internal: Dynamically provisioned PV'
+    gluster.kubernetes.io/heketi-volume-id: 379846a671be2872498bed157bc266d1
+    gluster.org/type: file
+    kubernetes.io/createdby: heketi-dynamic-provisioner
+    pv.beta.kubernetes.io/gid: "2001"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    pv.kubernetes.io/provisioned-by: kubernetes.io/glusterfs
+    volume.beta.kubernetes.io/mount-options: auto_unmount
+  creationTimestamp: null
+  name: pvc-eb8046ed-f77f-11e8-ba2b-0aa0c5b29fe8
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: jenkins
+    namespace: cicd-demo
+    resourceVersion: "5622859"
+    uid: eb8046ed-f77f-11e8-ba2b-0aa0c5b29fe8
+  glusterfs:
+    endpoints: glusterfs-dynamic-jenkins
+    path: vol_379846a671be2872498bed157bc266d1
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: glusterfs-storage
+status: {}

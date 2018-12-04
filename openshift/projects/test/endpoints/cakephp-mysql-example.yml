@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: cakephp-mysql-example
+    template: cakephp-mysql-example
+  name: cakephp-mysql-example
+subsets:
+- addresses:
+  - ip: 10.131.0.184
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: cakephp-mysql-example-2-vcnmv
+      namespace: test
+      resourceVersion: "5628965"
+      uid: 4f31adde-f30c-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: web
+    port: 8080
+    protocol: TCP

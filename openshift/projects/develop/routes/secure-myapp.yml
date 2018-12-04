@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    description: Route for application's https service.
+    openshift.io/host.generated: "true"
+  creationTimestamp: null
+  labels:
+    app: eap70-postgresql-persistent-s2i
+    application: myapp
+    template: eap70-postgresql-persistent-s2i
+    xpaas: 1.4.14
+  name: secure-myapp
+spec:
+  host: secure-myapp-develop.apps01.amosdemo.io
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: secure-myapp
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-11-25T15:44:24Z
+      status: "True"
+      type: Admitted
+    host: secure-myapp-develop.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: jenkins-ephemeral
+    template: jenkins-ephemeral-template
+  name: jenkins
+subsets:
+- addresses:
+  - ip: 10.131.0.189
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: jenkins-1-k5mhr
+      namespace: cicd-sample
+      resourceVersion: "5628905"
+      uid: 4e9a84b1-f30c-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: web
+    port: 8080
+    protocol: TCP

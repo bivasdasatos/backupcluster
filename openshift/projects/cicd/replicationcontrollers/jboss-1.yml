@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    openshift.io/deployer-pod.completed-at: 2018-12-03 13:19:13 +0000 UTC
+    openshift.io/deployer-pod.created-at: 2018-12-03 13:20:52 +0000 UTC
+    openshift.io/deployer-pod.name: jboss-1-deploy
+    openshift.io/deployment-config.latest-version: "1"
+    openshift.io/deployment-config.name: jboss
+    openshift.io/deployment.phase: Complete
+    openshift.io/deployment.replicas: "1"
+    openshift.io/deployment.status-reason: config change
+    openshift.io/encoded-deployment-config: |
+      {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"jboss","namespace":"cicd","selfLink":"/apis/apps.openshift.io/v1/namespaces/cicd/deploymentconfigs/jboss","uid":"419681e7-f6fe-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"5510428","generation":2,"creationTimestamp":"2018-12-03T13:20:51Z","labels":{"app":"jboss"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["jboss"],"from":{"kind":"ImageStreamTag","namespace":"cicd","name":"jboss:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/cicd/jboss@sha256:57ba01b6436c60440bfdf217b5ff2ad6558b1f23aaf661df4eec4bb1ac16753d"}}],"replicas":1,"revisionHistoryLimit":10,"test":false,"selector":{"app":"jboss","deploymentconfig":"jboss"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"jboss","deploymentconfig":"jboss"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"containers":[{"name":"jboss","image":"docker-registry.default.svc:5000/cicd/jboss@sha256:57ba01b6436c60440bfdf217b5ff2ad6558b1f23aaf661df4eec4bb1ac16753d","ports":[{"containerPort":8080,"protocol":"TCP"},{"containerPort":8443,"protocol":"TCP"},{"containerPort":8778,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-12-03T13:20:51Z","lastTransitionTime":"2018-12-03T13:20:51Z","message":"Deployment config does not have minimum availability."}]}}
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: jboss
+    openshift.io/deployment-config.name: jboss
+  name: jboss-1
+  ownerReferences:
+  - apiVersion: apps.openshift.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DeploymentConfig
+    name: jboss
+    uid: 419681e7-f6fe-11e8-ba2b-0aa0c5b29fe8
+spec:
+  replicas: 1
+  selector:
+    app: jboss
+    deployment: jboss-1
+    deploymentconfig: jboss
+  template:
+    metadata:
+      annotations:
+        openshift.io/deployment-config.latest-version: "1"
+        openshift.io/deployment-config.name: jboss
+        openshift.io/deployment.name: jboss-1
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: jboss
+        deployment: jboss-1
+        deploymentconfig: jboss
+    spec:
+      containers:
+      - image: docker-registry.default.svc:5000/cicd/jboss@sha256:57ba01b6436c60440bfdf217b5ff2ad6558b1f23aaf661df4eec4bb1ac16753d
+        imagePullPolicy: Always
+        name: jboss
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  replicas: 0

@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    haproxy.router.openshift.io/timeout: 4m
+    openshift.io/host.generated: "true"
+    template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
+  creationTimestamp: null
+  labels:
+    app: jenkins-persistent
+    template: jenkins-persistent-template
+  name: jenkins
+spec:
+  host: jenkins-test1.apps01.amosdemo.io
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: jenkins
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-11-28T13:49:53Z
+      status: "True"
+      type: Admitted
+    host: jenkins-test1.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None

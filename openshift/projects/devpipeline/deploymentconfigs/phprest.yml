@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: phprest
+  name: phprest
+spec:
+  replicas: 1
+  selector:
+    deploymentconfig: phprest
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: phprest
+        deploymentconfig: phprest
+    spec:
+      containers:
+      - image: docker-registry.default.svc:5000/devpipeline/phprest@sha256:1a17b5369dd1b4d4328824277e76211104aeef2865036a5cc29909ed9eae28b5
+        imagePullPolicy: Always
+        name: phprest
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - phprest
+      from:
+        kind: ImageStreamTag
+        name: phprest:latest
+        namespace: devpipeline
+    type: ImageChange
+  - type: ConfigChange
+status:
+  availableReplicas: 0
+  latestVersion: 0
+  observedGeneration: 0
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0

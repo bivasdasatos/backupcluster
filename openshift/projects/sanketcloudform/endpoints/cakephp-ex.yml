@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: cakephp-ex
+  name: cakephp-ex
+subsets:
+- addresses:
+  - ip: 10.131.0.203
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: cakephp-ex-2-dxbzq
+      namespace: sanketcloudform
+      resourceVersion: "5628949"
+      uid: 4f01f629-f30c-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP

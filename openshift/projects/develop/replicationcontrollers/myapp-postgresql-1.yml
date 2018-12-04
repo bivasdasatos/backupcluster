@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    openshift.io/deployer-pod.completed-at: 2018-11-25 15:44:00 +0000 UTC
+    openshift.io/deployer-pod.created-at: 2018-11-25 15:44:34 +0000 UTC
+    openshift.io/deployer-pod.name: myapp-postgresql-1-deploy
+    openshift.io/deployment-config.latest-version: "1"
+    openshift.io/deployment-config.name: myapp-postgresql
+    openshift.io/deployment.phase: Complete
+    openshift.io/deployment.replicas: "1"
+    openshift.io/deployment.status-reason: config change
+    openshift.io/encoded-deployment-config: |
+      {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"myapp-postgresql","namespace":"develop","selfLink":"/apis/apps.openshift.io/v1/namespaces/develop/deploymentconfigs/myapp-postgresql","uid":"0196afaa-f0c9-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4138954","generation":2,"creationTimestamp":"2018-11-25T15:44:34Z","labels":{"app":"eap70-postgresql-persistent-s2i","application":"myapp","template":"eap70-postgresql-persistent-s2i","xpaas":"1.4.14"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["myapp-postgresql"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"postgresql:9.5"},"lastTriggeredImage":"registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:eb7c6fa06fce6d4efc55b7311dd45797a26bd4d8ec4648056ec068b7a4653ec8"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"deploymentConfig":"myapp-postgresql"},"template":{"metadata":{"name":"myapp-postgresql","creationTimestamp":null,"labels":{"application":"myapp","deploymentConfig":"myapp-postgresql"}},"spec":{"volumes":[{"name":"myapp-postgresql-pvol","persistentVolumeClaim":{"claimName":"myapp-postgresql-claim"}}],"containers":[{"name":"myapp-postgresql","image":"registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:eb7c6fa06fce6d4efc55b7311dd45797a26bd4d8ec4648056ec068b7a4653ec8","ports":[{"containerPort":5432,"protocol":"TCP"}],"env":[{"name":"POSTGRESQL_USER","value":"userki1"},{"name":"POSTGRESQL_PASSWORD","value":"dLGLDSaR"},{"name":"POSTGRESQL_DATABASE","value":"root"},{"name":"POSTGRESQL_MAX_CONNECTIONS"},{"name":"POSTGRESQL_MAX_PREPARED_TRANSACTIONS"},{"name":"POSTGRESQL_SHARED_BUFFERS"}],"resources":{},"volumeMounts":[{"name":"myapp-postgresql-pvol","mountPath":"/var/lib/pgsql/data"}],"livenessProbe":{"tcpSocket":{"port":5432},"initialDelaySeconds":30,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"readinessProbe":{"exec":{"command":["/bin/sh","-i","-c","psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c 'SELECT 1'"]},"initialDelaySeconds":5,"timeoutSeconds":1,"periodSeconds":10,"successThreshold":1,"failureThreshold":3},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":60,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":0,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]}}}
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: eap70-postgresql-persistent-s2i
+    application: myapp
+    openshift.io/deployment-config.name: myapp-postgresql
+    template: eap70-postgresql-persistent-s2i
+    xpaas: 1.4.14
+  name: myapp-postgresql-1
+  ownerReferences:
+  - apiVersion: apps.openshift.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DeploymentConfig
+    name: myapp-postgresql
+    uid: 0196afaa-f0c9-11e8-ba2b-0aa0c5b29fe8
+spec:
+  replicas: 1
+  selector:
+    deployment: myapp-postgresql-1
+    deploymentConfig: myapp-postgresql
+    deploymentconfig: myapp-postgresql
+  template:
+    metadata:
+      annotations:
+        openshift.io/deployment-config.latest-version: "1"
+        openshift.io/deployment-config.name: myapp-postgresql
+        openshift.io/deployment.name: myapp-postgresql-1
+      creationTimestamp: null
+      labels:
+        application: myapp
+        deployment: myapp-postgresql-1
+        deploymentConfig: myapp-postgresql
+        deploymentconfig: myapp-postgresql
+    spec:
+      containers:
+      - env:
+        - name: POSTGRESQL_USER
+          value: userki1
+        - name: POSTGRESQL_PASSWORD
+          value: dLGLDSaR
+        - name: POSTGRESQL_DATABASE
+          value: root
+        - name: POSTGRESQL_MAX_CONNECTIONS
+        - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
+        - name: POSTGRESQL_SHARED_BUFFERS
+        image: registry.access.redhat.com/rhscl/postgresql-95-rhel7@sha256:eb7c6fa06fce6d4efc55b7311dd45797a26bd4d8ec4648056ec068b7a4653ec8
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 5432
+          timeoutSeconds: 1
+        name: myapp-postgresql
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -i
+            - -c
+            - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+              'SELECT 1'
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/pgsql/data
+          name: myapp-postgresql-pvol
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: myapp-postgresql-pvol
+        persistentVolumeClaim:
+          claimName: myapp-postgresql-claim
+status:
+  replicas: 0

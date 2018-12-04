@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/deployment-config.latest-version: "3"
+    openshift.io/deployment-config.name: registry-console
+    openshift.io/deployment.name: registry-console-3
+    openshift.io/generated-by: OpenShiftNewApp
+    openshift.io/scc: restricted
+  creationTimestamp: null
+  generateName: registry-console-3-
+  labels:
+    app: registry-console
+    deployment: registry-console-3
+    deploymentconfig: registry-console
+    name: registry-console
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicationController
+    name: registry-console-3
+    uid: 29ebb49e-e8b3-11e8-ba2b-0aa0c5b29fe8
+spec:
+  containers:
+  - env:
+    - name: OPENSHIFT_OAUTH_PROVIDER_URL
+      value: https://master01.amosdemo.io:8443
+    - name: OPENSHIFT_OAUTH_CLIENT_ID
+      value: cockpit-oauth-client
+    - name: KUBERNETES_INSECURE
+      value: "false"
+    - name: COCKPIT_KUBE_INSECURE
+      value: "false"
+    - name: REGISTRY_ONLY
+      value: "true"
+    - name: REGISTRY_HOST
+      value: docker-registry-default.apps01.amosdemo.io
+    image: registry.access.redhat.com/openshift3/registry-console:v3.9
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /ping
+        port: 9090
+        scheme: HTTP
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    name: registry-console
+    ports:
+    - containerPort: 9090
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /ping
+        port: 9090
+        scheme: HTTP
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - KILL
+        - MKNOD
+        - SETGID
+        - SETUID
+      runAsUser: 1000000000
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-k8m7f
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: default-dockercfg-5f7qd
+  nodeName: amos01-master001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/master: "true"
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 1000000000
+    seLinuxOptions:
+      level: s0:c1,c0
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - name: default-token-k8m7f
+    secret:
+      defaultMode: 420
+      secretName: default-token-k8m7f
+status:
+  phase: Pending
+  qosClass: BestEffort

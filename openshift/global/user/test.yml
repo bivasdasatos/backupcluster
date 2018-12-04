@@ -1,0 +1,8 @@
+apiVersion: v1
+groups: null
+identities:
+- htpasswd_auth:test
+kind: User
+metadata:
+  creationTimestamp: null
+  name: test

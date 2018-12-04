@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: NetNamespace
+metadata:
+  creationTimestamp: null
+  name: achaitanya1
+netid: 12360621
+netname: achaitanya1

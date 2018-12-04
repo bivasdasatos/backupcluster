@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ImageStream
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewBuild
+  creationTimestamp: null
+  generation: 1
+  labels:
+    build: wlpapp
+  name: wlpapp
+spec:
+  lookupPolicy:
+    local: false
+status:
+  dockerImageRepository: ""

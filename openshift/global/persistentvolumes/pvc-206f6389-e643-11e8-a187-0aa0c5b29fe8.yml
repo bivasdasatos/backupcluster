@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    Description: 'Gluster-Internal: Dynamically provisioned PV'
+    gluster.kubernetes.io/heketi-volume-id: 07346c2deba5a72bf4d37b17943b2ec6
+    gluster.org/type: file
+    kubernetes.io/createdby: heketi-dynamic-provisioner
+    pv.beta.kubernetes.io/gid: "2001"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    pv.kubernetes.io/provisioned-by: kubernetes.io/glusterfs
+    volume.beta.kubernetes.io/mount-options: auto_unmount
+  creationTimestamp: null
+  name: pvc-206f6389-e643-11e8-a187-0aa0c5b29fe8
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 30Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: logging-es-0
+    namespace: logging
+    resourceVersion: "1505626"
+    uid: 206f6389-e643-11e8-a187-0aa0c5b29fe8
+  glusterfs:
+    endpoints: glusterfs-dynamic-logging-es-0
+    path: vol_07346c2deba5a72bf4d37b17943b2ec6
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: glusterfs-storage
+status: {}

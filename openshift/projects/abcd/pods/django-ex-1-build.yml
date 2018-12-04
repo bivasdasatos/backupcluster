@@ -1,0 +1,160 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/build.name: django-ex-1
+    openshift.io/scc: privileged
+  creationTimestamp: null
+  labels:
+    openshift.io/build.name: django-ex-1
+  name: django-ex-1-build
+  ownerReferences:
+  - apiVersion: build.openshift.io/v1
+    controller: true
+    kind: Build
+    name: django-ex-1
+    uid: abbf36e1-f3ba-11e8-ba2b-0aa0c5b29fe8
+spec:
+  containers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-sti-build
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"django-ex-1","namespace":"abcd","selfLink":"/apis/build.openshift.io/v1/namespaces/abcd/builds/django-ex-1","uid":"abbf36e1-f3ba-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4777833","creationTimestamp":"2018-11-29T09:39:30Z","labels":{"app":"django-ex","buildconfig":"django-ex","openshift.io/build-config.name":"django-ex","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"django-ex","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"django-ex","uid":"abb7f334-f3ba-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/openshift/django-ex.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/python-36-rhel7@sha256:d55b6379d8d76b90ca7bd20b7632013d4c2bb77f357151faa89af8a76c188cdc"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/abcd/django-ex:latest"},"pushSecret":{"name":"builder-dockercfg-82cl4"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/python-36-rhel7@sha256:d55b6379d8d76b90ca7bd20b7632013d4c2bb77f357151faa89af8a76c188cdc","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"python:3.6"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/abcd/django-ex:latest","config":{"kind":"BuildConfig","namespace":"abcd","name":"django-ex"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/openshift/django-ex.git
+    - name: SOURCE_URI
+      value: https://github.com/openshift/django-ex.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    - name: PUSH_DOCKERCFG_PATH
+      value: /var/run/secrets/openshift.io/push
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: sti-build
+    resources: {}
+    securityContext:
+      privileged: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/docker.sock
+      name: docker-socket
+    - mountPath: /var/run/crio/crio.sock
+      name: crio-socket
+    - mountPath: /var/run/secrets/openshift.io/push
+      name: builder-dockercfg-82cl4-push
+      readOnly: true
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-7sch6
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: builder-dockercfg-82cl4
+  initContainers:
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-git-clone
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"django-ex-1","namespace":"abcd","selfLink":"/apis/build.openshift.io/v1/namespaces/abcd/builds/django-ex-1","uid":"abbf36e1-f3ba-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4777833","creationTimestamp":"2018-11-29T09:39:30Z","labels":{"app":"django-ex","buildconfig":"django-ex","openshift.io/build-config.name":"django-ex","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"django-ex","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"django-ex","uid":"abb7f334-f3ba-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/openshift/django-ex.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/python-36-rhel7@sha256:d55b6379d8d76b90ca7bd20b7632013d4c2bb77f357151faa89af8a76c188cdc"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/abcd/django-ex:latest"},"pushSecret":{"name":"builder-dockercfg-82cl4"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/python-36-rhel7@sha256:d55b6379d8d76b90ca7bd20b7632013d4c2bb77f357151faa89af8a76c188cdc","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"python:3.6"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/abcd/django-ex:latest","config":{"kind":"BuildConfig","namespace":"abcd","name":"django-ex"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/openshift/django-ex.git
+    - name: SOURCE_URI
+      value: https://github.com/openshift/django-ex.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: git-clone
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-7sch6
+      readOnly: true
+  - args:
+    - --loglevel=0
+    command:
+    - openshift-manage-dockerfile
+    env:
+    - name: BUILD
+      value: |
+        {"kind":"Build","apiVersion":"v1","metadata":{"name":"django-ex-1","namespace":"abcd","selfLink":"/apis/build.openshift.io/v1/namespaces/abcd/builds/django-ex-1","uid":"abbf36e1-f3ba-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4777833","creationTimestamp":"2018-11-29T09:39:30Z","labels":{"app":"django-ex","buildconfig":"django-ex","openshift.io/build-config.name":"django-ex","openshift.io/build.start-policy":"Serial"},"annotations":{"openshift.io/build-config.name":"django-ex","openshift.io/build.number":"1"},"ownerReferences":[{"apiVersion":"build.openshift.io/v1","kind":"BuildConfig","name":"django-ex","uid":"abb7f334-f3ba-11e8-ba2b-0aa0c5b29fe8","controller":true}]},"spec":{"serviceAccount":"builder","source":{"type":"Git","git":{"uri":"https://github.com/openshift/django-ex.git","ref":"master"}},"strategy":{"type":"Source","sourceStrategy":{"from":{"kind":"DockerImage","name":"registry.access.redhat.com/rhscl/python-36-rhel7@sha256:d55b6379d8d76b90ca7bd20b7632013d4c2bb77f357151faa89af8a76c188cdc"}}},"output":{"to":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/abcd/django-ex:latest"},"pushSecret":{"name":"builder-dockercfg-82cl4"}},"resources":{},"postCommit":{},"nodeSelector":null,"triggeredBy":[{"message":"Image change","imageChangeBuild":{"imageID":"registry.access.redhat.com/rhscl/python-36-rhel7@sha256:d55b6379d8d76b90ca7bd20b7632013d4c2bb77f357151faa89af8a76c188cdc","fromRef":{"kind":"ImageStreamTag","namespace":"openshift","name":"python:3.6"}}}]},"status":{"phase":"New","outputDockerImageReference":"docker-registry.default.svc:5000/abcd/django-ex:latest","config":{"kind":"BuildConfig","namespace":"abcd","name":"django-ex"},"output":{}}}
+    - name: SOURCE_REPOSITORY
+      value: https://github.com/openshift/django-ex.git
+    - name: SOURCE_URI
+      value: https://github.com/openshift/django-ex.git
+    - name: SOURCE_REF
+      value: master
+    - name: ORIGIN_VERSION
+      value: v3.9.27
+    - name: ALLOWED_UIDS
+      value: 1-
+    - name: DROP_CAPS
+      value: KILL,MKNOD,SETGID,SETUID
+    image: openshift3/ose-sti-builder:v3.9.27
+    imagePullPolicy: IfNotPresent
+    name: manage-dockerfile
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
+    volumeMounts:
+    - mountPath: /tmp/build
+      name: buildworkdir
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: builder-token-7sch6
+      readOnly: true
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: builder
+  serviceAccountName: builder
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - emptyDir: {}
+    name: buildworkdir
+  - hostPath:
+      path: /var/run/docker.sock
+      type: ""
+    name: docker-socket
+  - hostPath:
+      path: /var/run/crio/crio.sock
+      type: ""
+    name: crio-socket
+  - name: builder-dockercfg-82cl4-push
+    secret:
+      defaultMode: 384
+      secretName: builder-dockercfg-82cl4
+  - name: builder-token-7sch6
+    secret:
+      defaultMode: 420
+      secretName: builder-token-7sch6
+status:
+  phase: Pending
+  qosClass: BestEffort

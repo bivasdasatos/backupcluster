@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Template
+metadata:
+  annotations:
+    description: glusterblock provisioner template
+    tags: glusterfs
+  creationTimestamp: null
+  labels:
+    glusterblock: template
+    glusterfs: block-template
+  name: glusterblock-provisioner
+objects:
+- apiVersion: v1
+  kind: ClusterRole
+  metadata:
+    labels:
+      glusterblock: provisioner-runner-clusterrole
+      glusterfs: block-provisioner-runner-clusterrole
+    name: glusterblock-provisioner-runner
+  rules:
+  - apiGroups:
+    - ""
+    resources:
+    - persistentvolumes
+    verbs:
+    - get
+    - list
+    - watch
+    - create
+    - delete
+  - apiGroups:
+    - ""
+    resources:
+    - persistentvolumeclaims
+    verbs:
+    - get
+    - list
+    - watch
+    - update
+  - apiGroups:
+    - storage.k8s.io
+    resources:
+    - storageclasses
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - events
+    verbs:
+    - list
+    - watch
+    - create
+    - update
+    - patch
+  - apiGroups:
+    - ""
+    resources:
+    - services
+    verbs:
+    - get
+  - apiGroups:
+    - ""
+    resources:
+    - secrets
+    verbs:
+    - get
+    - create
+    - delete
+  - apiGroups:
+    - ""
+    resources:
+    - routes
+    verbs:
+    - get
+    - list
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    labels:
+      glusterblock: ${CLUSTER_NAME}-provisioner-sa
+      glusterfs: block-${CLUSTER_NAME}-provisioner-sa
+    name: glusterblock-${CLUSTER_NAME}-provisioner
+- apiVersion: v1
+  kind: ClusterRoleBinding
+  metadata:
+    name: glusterblock-${CLUSTER_NAME}-provisioner
+  roleRef:
+    name: glusterblock-provisioner-runner
+  subjects:
+  - kind: ServiceAccount
+    name: glusterblock-${CLUSTER_NAME}-provisioner
+    namespace: ${NAMESPACE}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      description: Defines how to deploy the glusterblock provisioner pod.
+    labels:
+      glusterblock: ${CLUSTER_NAME}-provisioner-dc
+      glusterfs: block-${CLUSTER_NAME}-provisioner-dc
+    name: glusterblock-${CLUSTER_NAME}-provisioner-dc
+  spec:
+    replicas: 1
+    selector:
+      glusterfs: block-${CLUSTER_NAME}-provisioner-pod
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          glusterfs: block-${CLUSTER_NAME}-provisioner-pod
+        name: glusterblock-provisioner
+      spec:
+        containers:
+        - env:
+          - name: PROVISIONER_NAME
+            value: gluster.org/glusterblock
+          image: ${IMAGE_NAME}:${IMAGE_VERSION}
+          imagePullPolicy: IfNotPresent
+          name: glusterblock-provisioner
+        serviceAccountName: glusterblock-${CLUSTER_NAME}-provisioner
+    triggers:
+    - type: ConfigChange
+parameters:
+- displayName: glusterblock provisioner container image name
+  name: IMAGE_NAME
+  required: true
+- displayName: glusterblock provisioner container image version
+  name: IMAGE_VERSION
+  required: true
+- description: The namespace in which these resources are being created
+  displayName: glusterblock provisioner namespace
+  name: NAMESPACE
+  required: true
+- description: A unique name to identify which heketi service manages this cluster,
+    useful for running multiple heketi instances
+  displayName: GlusterFS cluster name
+  name: CLUSTER_NAME
+  value: storage

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/glusterfs
+  creationTimestamp: null
+  name: postgresql-sonarqube-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: glusterfs-storage
+  volumeName: pvc-f3604e1f-e721-11e8-b839-0aa0c5b29fe8
+status: {}

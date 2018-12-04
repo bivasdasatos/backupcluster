@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/glusterfs
+  creationTimestamp: null
+  labels:
+    app: eap70-postgresql-persistent-s2i
+    application: myapp
+    template: eap70-postgresql-persistent-s2i
+    xpaas: 1.4.14
+  name: myapp-postgresql-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: glusterfs-storage
+  volumeName: pvc-0197aa29-f0c9-11e8-ba2b-0aa0c5b29fe8
+status: {}

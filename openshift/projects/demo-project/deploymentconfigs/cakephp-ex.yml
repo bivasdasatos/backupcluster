@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: cakephp-ex
+  name: cakephp-ex
+spec:
+  replicas: 1
+  selector:
+    deploymentconfig: cakephp-ex
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: cakephp-ex
+        deploymentconfig: cakephp-ex
+    spec:
+      containers:
+      - image: docker-registry.default.svc:5000/demo-project/cakephp-ex@sha256:e9c1d780a7a8a6f73c092fcc21468d7dc4a6b02469d3b344223edbae87525658
+        imagePullPolicy: Always
+        name: cakephp-ex
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - cakephp-ex
+      from:
+        kind: ImageStreamTag
+        name: cakephp-ex:latest
+        namespace: demo-project
+    type: ImageChange
+  - type: ConfigChange
+status:
+  availableReplicas: 0
+  latestVersion: 0
+  observedGeneration: 0
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0

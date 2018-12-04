@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    openshift.io/deployer-pod.completed-at: 2018-11-01 06:33:35 +0000 UTC
+    openshift.io/deployer-pod.created-at: 2018-11-01 06:31:06 +0000 UTC
+    openshift.io/deployer-pod.name: glusterblock-storage-provisioner-dc-1-deploy
+    openshift.io/deployment-config.latest-version: "1"
+    openshift.io/deployment-config.name: glusterblock-storage-provisioner-dc
+    openshift.io/deployment.phase: Complete
+    openshift.io/deployment.replicas: "1"
+    openshift.io/deployment.status-reason: config change
+    openshift.io/encoded-deployment-config: |
+      {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"glusterblock-storage-provisioner-dc","namespace":"glusterfs","selfLink":"/apis/apps.openshift.io/v1/namespaces/glusterfs/deploymentconfigs/glusterblock-storage-provisioner-dc","uid":"b6a7559c-dd9f-11e8-b362-0aa0c5b29fe8","resourceVersion":"88017","generation":1,"creationTimestamp":"2018-11-01T06:31:06Z","labels":{"glusterblock":"storage-provisioner-dc","glusterfs":"block-storage-provisioner-dc"},"annotations":{"description":"Defines how to deploy the glusterblock provisioner pod."}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"glusterfs":"block-storage-provisioner-pod"},"template":{"metadata":{"name":"glusterblock-provisioner","creationTimestamp":null,"labels":{"glusterfs":"block-storage-provisioner-pod"}},"spec":{"containers":[{"name":"glusterblock-provisioner","image":"rhgs3/rhgs-gluster-block-prov-rhel7:latest","env":[{"name":"PROVISIONER_NAME","value":"gluster.org/glusterblock"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","serviceAccountName":"glusterblock-storage-provisioner","serviceAccount":"glusterblock-storage-provisioner","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":0,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]}}}
+  creationTimestamp: null
+  generation: 1
+  labels:
+    glusterblock: storage-provisioner-dc
+    glusterfs: block-storage-provisioner-dc
+    openshift.io/deployment-config.name: glusterblock-storage-provisioner-dc
+  name: glusterblock-storage-provisioner-dc-1
+  ownerReferences:
+  - apiVersion: apps.openshift.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DeploymentConfig
+    name: glusterblock-storage-provisioner-dc
+    uid: b6a7559c-dd9f-11e8-b362-0aa0c5b29fe8
+spec:
+  replicas: 1
+  selector:
+    deployment: glusterblock-storage-provisioner-dc-1
+    deploymentconfig: glusterblock-storage-provisioner-dc
+    glusterfs: block-storage-provisioner-pod
+  template:
+    metadata:
+      annotations:
+        openshift.io/deployment-config.latest-version: "1"
+        openshift.io/deployment-config.name: glusterblock-storage-provisioner-dc
+        openshift.io/deployment.name: glusterblock-storage-provisioner-dc-1
+      creationTimestamp: null
+      labels:
+        deployment: glusterblock-storage-provisioner-dc-1
+        deploymentconfig: glusterblock-storage-provisioner-dc
+        glusterfs: block-storage-provisioner-pod
+    spec:
+      containers:
+      - env:
+        - name: PROVISIONER_NAME
+          value: gluster.org/glusterblock
+        image: rhgs3/rhgs-gluster-block-prov-rhel7:latest
+        imagePullPolicy: IfNotPresent
+        name: glusterblock-provisioner
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: glusterblock-storage-provisioner
+      serviceAccountName: glusterblock-storage-provisioner
+      terminationGracePeriodSeconds: 30
+status:
+  replicas: 0

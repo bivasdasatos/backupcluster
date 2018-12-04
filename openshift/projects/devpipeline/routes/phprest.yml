@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+    openshift.io/host.generated: "true"
+  creationTimestamp: null
+  labels:
+    app: phprest
+  name: phprest
+spec:
+  host: phprest-devpipeline.apps01.amosdemo.io
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: phprest
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-11-22T05:23:39Z
+      status: "True"
+      type: Admitted
+    host: phprest-devpipeline.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None

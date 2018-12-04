@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  error-page-503.http: "<html>\n<Title> 503 customized error page \n</Title>\nWe'll
+    get back to you Soon!\n</html>\n"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: haproxy-custom-configs

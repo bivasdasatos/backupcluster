@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    openshift.io/deployer-pod.completed-at: 2018-11-29 09:39:21 +0000 UTC
+    openshift.io/deployer-pod.created-at: 2018-11-29 09:40:53 +0000 UTC
+    openshift.io/deployer-pod.name: django-ex-2-deploy
+    openshift.io/deployment-config.latest-version: "2"
+    openshift.io/deployment-config.name: django-ex
+    openshift.io/deployment.phase: Complete
+    openshift.io/deployment.replicas: "1"
+    openshift.io/deployment.status-reason: image change
+    openshift.io/encoded-deployment-config: |
+      {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"django-ex","namespace":"abcd","selfLink":"/apis/apps.openshift.io/v1/namespaces/abcd/deploymentconfigs/django-ex","uid":"abbb5710-f3ba-11e8-ba2b-0aa0c5b29fe8","resourceVersion":"4777949","generation":3,"creationTimestamp":"2018-11-29T09:39:30Z","labels":{"app":"django-ex"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["django-ex"],"from":{"kind":"ImageStreamTag","namespace":"abcd","name":"django-ex:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/abcd/django-ex@sha256:5a6035417039334a57ffa323ccdbb4e44e076123d3e01f1a26eea8088e2ee66f"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"deploymentconfig":"django-ex"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"django-ex","deploymentconfig":"django-ex"}},"spec":{"containers":[{"name":"django-ex","image":"docker-registry.default.svc:5000/abcd/django-ex@sha256:5a6035417039334a57ffa323ccdbb4e44e076123d3e01f1a26eea8088e2ee66f","ports":[{"containerPort":8080,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":2,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"DockerImage","name":"docker-registry.default.svc:5000/abcd/django-ex@sha256:5a6035417039334a57ffa323ccdbb4e44e076123d3e01f1a26eea8088e2ee66f"}}}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-11-29T09:39:30Z","lastTransitionTime":"2018-11-29T09:39:30Z","message":"Deployment config does not have minimum availability."},{"type":"Progressing","status":"Unknown","lastUpdateTime":"2018-11-29T09:40:04Z","lastTransitionTime":"2018-11-29T09:40:04Z","message":"replication controller \"django-ex-1\" is waiting for pod \"django-ex-1-deploy\" to run"}]}}
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: django-ex
+    openshift.io/deployment-config.name: django-ex
+  name: django-ex-2
+  ownerReferences:
+  - apiVersion: apps.openshift.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DeploymentConfig
+    name: django-ex
+    uid: abbb5710-f3ba-11e8-ba2b-0aa0c5b29fe8
+spec:
+  replicas: 1
+  selector:
+    deployment: django-ex-2
+    deploymentconfig: django-ex
+  template:
+    metadata:
+      annotations:
+        openshift.io/deployment-config.latest-version: "2"
+        openshift.io/deployment-config.name: django-ex
+        openshift.io/deployment.name: django-ex-2
+      creationTimestamp: null
+      labels:
+        app: django-ex
+        deployment: django-ex-2
+        deploymentconfig: django-ex
+    spec:
+      containers:
+      - image: docker-registry.default.svc:5000/abcd/django-ex@sha256:5a6035417039334a57ffa323ccdbb4e44e076123d3e01f1a26eea8088e2ee66f
+        imagePullPolicy: Always
+        name: django-ex
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  replicas: 0

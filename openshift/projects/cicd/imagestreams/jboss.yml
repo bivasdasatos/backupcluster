@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ImageStream
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewBuild
+  creationTimestamp: null
+  generation: 21
+  labels:
+    build: jboss
+  name: jboss
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/cicd/jboss:132
+    generation: 17
+    importPolicy: {}
+    name: "132"
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/cicd/jboss:3
+    generation: 21
+    importPolicy: {}
+    name: "3"
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/cicd/jboss:cicd
+    generation: 16
+    importPolicy: {}
+    name: cicd
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/cicd/jboss:jenkins-1-5m2nk_133
+    generation: 18
+    importPolicy: {}
+    name: jenkins-1-5m2nk_133
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/cicd/jboss:jenkins-1-5m2nk_134
+    generation: 19
+    importPolicy: {}
+    name: jenkins-1-5m2nk_134
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/cicd/jboss:jenkins-1-5m2nk_135
+    generation: 20
+    importPolicy: {}
+    name: jenkins-1-5m2nk_135
+    referencePolicy:
+      type: Source
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: docker-registry.default.svc:5000/cicd/jboss:latest
+    generation: null
+    importPolicy: {}
+    name: latest
+    referencePolicy:
+      type: ""
+status:
+  dockerImageRepository: ""

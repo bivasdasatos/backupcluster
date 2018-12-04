@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  creationTimestamp: null
+  name: wlpdemo
+spec:
+  nodeSelector: null
+  output: {}
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    type: None
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        pipeline {
+          agent { label "maven" }
+          stages {
+            stage("Cloning Source") {
+              steps {
+                  git credentialsId: 'wlp-git-repo-cred', url: 'https://github.gsissc.myatos.net/A164545/demo.git'
+              }
+            }
+            stage('Compiling code') {
+                steps {
+                  script {
+                      sh 'mvn clean compile'
+                  }
+                }
+            }
+               stage('Junit testing') {
+                 steps {
+                   script {
+                     sh 'mvn test -Dintegration-tests.skip=true'
+                   }
+                 }
+               }
+               stage('Integration testing') {
+                 steps {
+                   script {
+                     sh 'mvn failsafe:integration-test'
+                   }
+                 }
+               }
+            stage("Building war"){
+              steps {
+                  sh 'mvn -Dbuild.number=${targetVersion} install'
+              }
+            }
+            stage("Building Image") {
+              steps {
+                   sh 'oc start-build wlpapp --from-dir ./webs/web/target/war --follow'
+               }
+            }
+          }
+        }
+    type: JenkinsPipeline
+  triggers: []
+status:
+  lastVersion: 0

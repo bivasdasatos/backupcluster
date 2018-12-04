@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    description: Route for application's http service.
+  creationTimestamp: null
+  labels:
+    app: gogs
+  name: gogs
+spec:
+  host: gogs.apps01.amosdemo.io
+  port:
+    targetPort: 3000-tcp
+  to:
+    kind: Service
+    name: gogs
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-11-13T06:24:47Z
+      status: "True"
+      type: Admitted
+    host: gogs.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None

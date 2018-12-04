@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: cakephp-mysql-persistent
+    template: cakephp-mysql-persistent
+  name: mysql
+subsets:
+- notReadyAddresses:
+  - ip: 10.131.0.204
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: mysql-1-nrsrb
+      namespace: cloud-test
+      resourceVersion: "5662368"
+      uid: 4ec344e5-f30c-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: mysql
+    port: 3306
+    protocol: TCP

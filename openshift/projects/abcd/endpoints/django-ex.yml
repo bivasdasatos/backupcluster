@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    app: django-ex
+  name: django-ex
+subsets:
+- addresses:
+  - ip: 10.131.0.57
+    nodeName: amos01-compute001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: django-ex-2-wvlrj
+      namespace: abcd
+      resourceVersion: "5628991"
+      uid: 82267a13-f6cc-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP

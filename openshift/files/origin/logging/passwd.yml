@@ -1,0 +1,2 @@
+"system:serviceaccount:openshift-metrics:prometheus":
+  passwd: "UDRBQXhUR3FMQk96UGlMUw=="

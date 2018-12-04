@@ -1,0 +1,377 @@
+apiVersion: v1
+data:
+  error-page-408.http: |
+    <html>
+         <head>
+         <title>408 Http Error</title>
+         </head>
+    </html>
+    ...
+  haproxy-config.template: "{{/*\r\n    haproxy-config.cfg: contains the main config
+    with helper backends that are used to terminate\r\n    \t\t\t\t\tencryption before
+    finally sending to a host_be which is the backend that is the final\r\n    \t\t\t\t\tbackend
+    for a route and contains all the endpoints for the service\r\n*/}}\r\n{{- define
+    \"/var/lib/haproxy/conf/haproxy.config\" }}\r\n{{- $workingDir := .WorkingDir
+    }}\r\n{{- $defaultDestinationCA := .DefaultDestinationCA }}\r\n{{- $router_ip_v4_v6_mode
+    := env \"ROUTER_IP_V4_V6_MODE\" \"v4\" }}\r\n\r\n\r\n{{- /* A bunch of regular
+    expressions.  Each should be wrapped in (?:) so that it is safe to include bare
+    */}}\r\n{{- /* quadPattern: Match a quad in an IP address; e.g. 123 */}}\r\n{{-
+    $quadPattern := `(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])` -}}\r\n\r\n{{-
+    /* ipPattern: Match an IPv4 address; e.g. 192.168.21.23 */}}\r\n{{- $ipPattern
+    := printf `(?:%s\\.%s\\.%s\\.%s)` $quadPattern $quadPattern $quadPattern $quadPattern
+    -}}\r\n\r\n{{- /* cidrPattern: Match an IP and network size in CIDR form; e.g.
+    192.168.21.23/24 */}}\r\n{{- $cidrPattern := printf `(?:%s(?:/(?:[0-9]|[1-2][0-9]|3[0-2]))?)`
+    $ipPattern -}}\r\n\r\n{{- /* cidrListPattern: Match a space separated list of
+    CIDRs; e.g. 192.168.21.23/24 192.10.2.12 */}}\r\n{{- $cidrListPattern := printf
+    `(?:%s(?: +%s)*)` $cidrPattern $cidrPattern -}}\r\n\r\n{{- /* cookie name pattern:
+    */}}\r\n{{- $cookieNamePattern := `[a-zA-Z0-9_-]+` -}}\r\n\r\n{{- $timeSpecPattern
+    := `[1-9][0-9]*(us|ms|s|m|h|d)?` }}\r\n\r\n{{- /* hsts header in response: */}}\r\n{{-
+    $hstsOptionalTokenPattern := `(?:includeSubDomains|preload)` }}\r\n{{- $hstsPattern
+    := printf `(?:%[1]s[;])*max-age=(?:\\d+|\"\\d+\")(?:[;]%[1]s)*`  $hstsOptionalTokenPattern
+    -}}\r\n\r\nglobal\r\n  maxconn {{env \"ROUTER_MAX_CONNECTIONS\" \"20000\"}}\r\n\r\n
+    \ daemon\r\n{{- with (env \"ROUTER_SYSLOG_ADDRESS\") }}\r\n  log {{.}} {{env \"ROUTER_LOG_FACILITY\"
+    \"local1\"}} {{env \"ROUTER_LOG_LEVEL\" \"warning\"}}\r\n{{- end}}\r\n  ca-base
+    /etc/ssl\r\n  crt-base /etc/ssl\r\n  stats socket /var/lib/haproxy/run/haproxy.sock
+    mode 600 level admin expose-fd listeners\r\n  stats timeout 2m\r\n\r\n  # Increase
+    the default request size to be comparable to modern cloud load balancers (ALB:
+    64kb), affects\r\n  # total memory use when large numbers of connections are open.\r\n
+    \ tune.maxrewrite 8192\r\n  tune.bufsize 32768\r\n\r\n  # Prevent vulnerability
+    to POODLE attacks\r\n  ssl-default-bind-options no-sslv3\r\n\r\n# The default
+    cipher suite can be selected from the three sets recommended by https://wiki.mozilla.org/Security/Server_Side_TLS,\r\n#
+    or the user can provide one using the ROUTER_CIPHERS environment variable.\r\n#
+    By default when a cipher set is not provided, intermediate is used.\r\n{{- if
+    eq (env \"ROUTER_CIPHERS\" \"intermediate\") \"modern\" }}\r\n  # Modern cipher
+    suite (no legacy browser support) from https://wiki.mozilla.org/Security/Server_Side_TLS\r\n
+    \ tune.ssl.default-dh-param 2048\r\n  ssl-default-bind-ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256\r\n{{
+    else }}\r\n\r\n  {{- if eq (env \"ROUTER_CIPHERS\" \"intermediate\") \"intermediate\"
+    }}\r\n  # Intermediate cipher suite (default) from https://wiki.mozilla.org/Security/Server_Side_TLS\r\n
+    \ tune.ssl.default-dh-param 2048\r\n  ssl-default-bind-ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS\r\n
+    \ {{ else }}\r\n\r\n    {{- if eq (env \"ROUTER_CIPHERS\" \"intermediate\") \"old\"
+    }}\r\n\r\n  # Old cipher suite (maximum compatibility but insecure) from https://wiki.mozilla.org/Security/Server_Side_TLS\r\n
+    \ tune.ssl.default-dh-param 1024\r\n  ssl-default-bind-ciphers ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-RSA-DES-CBC3-SHA:ECDHE-ECDSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:DES-CBC3-SHA:HIGH:SEED:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!RSAPSK:!aDH:!aECDH:!EDH-DSS-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA:!SRP\r\n\r\n
+    \   {{- else }}\r\n  # user provided list of ciphers (Colon separated list as
+    seen above)\r\n  # the env default is not used here since we can't get here with
+    empty ROUTER_CIPHERS\r\n  tune.ssl.default-dh-param 2048\r\n  ssl-default-bind-ciphers
+    {{env \"ROUTER_CIPHERS\" \"ECDHE-ECDSA-CHACHA20-POLY1305\"}}\r\n    {{- end }}\r\n
+    \ {{- end }}\r\n{{- end }}\r\n\r\ndefaults\r\n  maxconn {{env \"ROUTER_MAX_CONNECTIONS\"
+    \"20000\"}}\r\n\r\n  # Add x-forwarded-for header.\r\n{{- if ne (env \"ROUTER_SYSLOG_ADDRESS\")
+    \"\" }}\r\n  {{- if ne (env \"ROUTER_SYSLOG_FORMAT\") \"\" }}\r\n  log-format
+    {{env \"ROUTER_SYSLOG_FORMAT\"}}\r\n  {{- else }}\r\n  option httplog\r\n  {{-
+    end }}\r\n  log global\r\n{{- end }}\r\n\r\n  # To configure custom default errors,
+    you can either uncomment the\r\n  # line below (server ... 127.0.0.1:8080) and
+    point it to your custom\r\n  # backend service or alternatively, you can send
+    a custom 503 error.\r\n  #\r\n  # server openshift_backend 127.0.0.1:8080\r\n
+    \ errorfile 503 /var/lib/haproxy/conf/error-page-503.http\r\n\r\n  timeout connect
+    {{firstMatch $timeSpecPattern (env \"ROUTER_DEFAULT_CONNECT_TIMEOUT\") \"5s\"}}\r\n
+    \ timeout client {{firstMatch $timeSpecPattern (env \"ROUTER_DEFAULT_CLIENT_TIMEOUT\")
+    \"30s\"}}\r\n  timeout client-fin {{firstMatch $timeSpecPattern (env \"ROUTER_CLIENT_FIN_TIMEOUT\")
+    \"1s\"}}\r\n  timeout server {{firstMatch $timeSpecPattern (env \"ROUTER_DEFAULT_SERVER_TIMEOUT\")
+    \"30s\"}}\r\n  timeout server-fin {{firstMatch $timeSpecPattern (env \"ROUTER_DEFAULT_SERVER_FIN_TIMEOUT\")
+    \"1s\"}}\r\n  timeout http-request {{firstMatch $timeSpecPattern (env \"ROUTER_SLOWLORIS_TIMEOUT\")
+    \"10s\" }}\r\n  timeout http-keep-alive {{firstMatch $timeSpecPattern (env \"ROUTER_SLOWLORIS_HTTP_KEEPALIVE\")
+    \"300s\" }}\r\n\r\n  # Long timeout for WebSocket connections.\r\n  timeout tunnel
+    {{firstMatch $timeSpecPattern (env \"ROUTER_DEFAULT_TUNNEL_TIMEOUT\") \"1h\" }}\r\n\r\n{{-
+    if isTrue (env \"ROUTER_ENABLE_COMPRESSION\") }}\r\n  compression algo gzip\r\n
+    \ compression type {{env \"ROUTER_COMPRESSION_MIME\" \"text/html text/plain text/css\"}}\r\n{{-
+    end }}\r\n\r\n{{ if (gt .StatsPort -1) }}\r\nlisten stats\r\n  bind :{{if (gt
+    .StatsPort 0)}}{{.StatsPort}}{{else}}1936{{end}}\r\n  mode http\r\n  # Health
+    check monitoring uri.\r\n  monitor-uri /healthz\r\n\r\n{{- if and (and (ne .StatsUser
+    \"\") (ne .StatsPassword \"\")) (gt .StatsPort 0) }}\r\n  # Add your custom health
+    check monitoring failure condition here.\r\n  # monitor fail if <condition>\r\n
+    \ stats enable\r\n  stats hide-version\r\n  stats realm Haproxy\\ Statistics\r\n
+    \ stats uri /\r\n  stats auth {{.StatsUser}}:{{.StatsPassword}}\r\n{{- end }}\r\n{{-
+    end }}\r\n\r\n{{ if .BindPorts -}}\r\nfrontend public\r\n    {{ if eq \"v4v6\"
+    $router_ip_v4_v6_mode }}\r\n  bind :::{{env \"ROUTER_SERVICE_HTTP_PORT\" \"80\"}}
+    v4v6\r\n    {{- else if eq \"v6\" $router_ip_v4_v6_mode }}\r\n  bind :::{{env
+    \"ROUTER_SERVICE_HTTP_PORT\" \"80\"}} v6only\r\n    {{- else }}\r\n  bind :{{env
+    \"ROUTER_SERVICE_HTTP_PORT\" \"80\"}}\r\n    {{- end }}\r\n    {{- if isTrue (env
+    \"ROUTER_USE_PROXY_PROTOCOL\") }} accept-proxy{{ end }}\r\n  mode http\r\n  tcp-request
+    inspect-delay 5s\r\n  tcp-request content accept if HTTP\r\n\r\n  {{- if (eq .StatsPort
+    -1) }}\r\n  monitor-uri /_______internal_router_healthz\r\n  {{- end }}\r\n\r\n
+    \ # Strip off Proxy headers to prevent HTTpoxy (https://httpoxy.org/)\r\n  http-request
+    del-header Proxy\r\n\r\n  # DNS labels are case insensitive (RFC 4343), we need
+    to convert the hostname into lowercase\r\n  # before matching, or any requests
+    containing uppercase characters will never match.\r\n  http-request set-header
+    Host %[req.hdr(Host),lower]\r\n\r\n  # check if we need to redirect/force using
+    https.\r\n  acl secure_redirect base,map_reg(/var/lib/haproxy/conf/os_route_http_redirect.map)
+    -m found\r\n  redirect scheme https if secure_redirect\r\n\r\n  # map to http
+    backend [or edge/reencrypt route exposed insecurely].\r\n  # Search from most
+    specific to general path (host case).\r\n  # Note: If no match, haproxy uses the
+    default_backend, no other\r\n  #       use_backend directives below this will
+    be processed.\r\n  use_backend %[base,map_reg(/var/lib/haproxy/conf/os_http_be.map)]\r\n\r\n
+    \ default_backend openshift_default\r\n\r\n# public ssl accepts all connections
+    and isn't checking certificates yet certificates to use will be\r\n# determined
+    by the next backend in the chain which may be an app backend (passthrough termination)
+    or a backend\r\n# that terminates encryption in this router (edge)\r\nfrontend
+    public_ssl\r\n    {{ if eq \"v4v6\" $router_ip_v4_v6_mode }}\r\n  bind :::{{env
+    \"ROUTER_SERVICE_HTTPS_PORT\" \"443\"}} v4v6\r\n    {{- else if eq \"v6\" $router_ip_v4_v6_mode
+    }}\r\n  bind :::{{env \"ROUTER_SERVICE_HTTPS_PORT\" \"443\"}} v6only\r\n    {{-
+    else }}\r\n  bind :{{env \"ROUTER_SERVICE_HTTPS_PORT\" \"443\"}}\r\n    {{- end
+    }}\r\n    {{- if isTrue (env \"ROUTER_USE_PROXY_PROTOCOL\") }} accept-proxy{{
+    end }}\r\n  tcp-request  inspect-delay 5s\r\n  tcp-request content accept if {
+    req_ssl_hello_type 1 }\r\n\r\n  # if the connection is SNI and the route is a
+    passthrough don't use the termination backend, just use the tcp backend\r\n  #
+    for the SNI case, we also need to compare it in case-insensitive mode (by converting
+    it to lowercase) as RFC 4343 says\r\n  acl sni req.ssl_sni -m found\r\n  acl sni_passthrough
+    req.ssl_sni,lower,map_reg(/var/lib/haproxy/conf/os_sni_passthrough.map) -m found\r\n
+    \ use_backend be_tcp:%[req.ssl_sni,lower,map_reg(/var/lib/haproxy/conf/os_tcp_be.map)]
+    if sni sni_passthrough\r\n\r\n  # if the route is SNI and NOT passthrough enter
+    the termination flow\r\n  use_backend be_sni if sni\r\n\r\n  # non SNI requests
+    should enter a default termination backend rather than the custom cert SNI backend
+    since it\r\n  # will not be able to match a cert to an SNI host\r\n  default_backend
+    be_no_sni\r\n\r\n##########################################################################\r\n#
+    TLS SNI\r\n#\r\n# When using SNI we can terminate encryption with custom certificates.\r\n#
+    Certs will be stored in a directory and will be matched with the SNI host header\r\n#
+    which must exist in the CN of the certificate.  Certificates must be concatenated\r\n#
+    as a single file (handled by the plugin writer) per the haproxy documentation.\r\n#\r\n#
+    Finally, check re-encryption settings and re-encrypt or just pass along the unencrypted\r\n#
+    traffic\r\n##########################################################################\r\nbackend
+    be_sni\r\n  server fe_sni 127.0.0.1:{{env \"ROUTER_SERVICE_SNI_PORT\" \"10444\"}}
+    weight 1 send-proxy\r\n\r\nfrontend fe_sni\r\n  # terminate ssl on edge\r\n  bind
+    127.0.0.1:{{env \"ROUTER_SERVICE_SNI_PORT\" \"10444\"}} ssl no-sslv3\r\n    {{-
+    if isTrue (env \"ROUTER_STRICT_SNI\") }} strict-sni {{ end }}\r\n    {{- \"\"}}
+    crt {{firstMatch \".+\" .DefaultCertificate \"/var/lib/haproxy/conf/default_pub_keys.pem\"}}\r\n
+    \   {{- \"\"}} crt-list /var/lib/haproxy/conf/cert_config.map accept-proxy\r\n
+    \ mode http\r\n\r\n  # Strip off Proxy headers to prevent HTTpoxy (https://httpoxy.org/)\r\n
+    \ http-request del-header Proxy\r\n\r\n  # DNS labels are case insensitive (RFC
+    4343), we need to convert the hostname into lowercase\r\n  # before matching,
+    or any requests containing uppercase characters will never match.\r\n  http-request
+    set-header Host %[req.hdr(Host),lower]\r\n\r\n  # check re-encrypt backends first
+    - from most specific to general path.\r\n  acl reencrypt base,map_reg(/var/lib/haproxy/conf/os_reencrypt.map)
+    -m found\r\n\r\n  # Search from most specific to general path (host case).\r\n
+    \ use_backend be_secure:%[base,map_reg(/var/lib/haproxy/conf/os_reencrypt.map)]
+    if reencrypt\r\n\r\n  # map to http backend\r\n  # Search from most specific to
+    general path (host case).\r\n  # Note: If no match, haproxy uses the default_backend,
+    no other\r\n  #       use_backend directives below this will be processed.\r\n
+    \ use_backend be_edge_http:%[base,map_reg(/var/lib/haproxy/conf/os_edge_http_be.map)]\r\n\r\n
+    \ default_backend openshift_default\r\n\r\n##########################################################################\r\n#
+    END TLS SNI\r\n##########################################################################\r\n\r\n##########################################################################\r\n#
+    TLS NO SNI\r\n#\r\n# When we don't have SNI the only thing we can try to do is
+    terminate the encryption\r\n# using our wild card certificate.  Once that is complete
+    we can either re-encrypt\r\n# the traffic or pass it on to the backends\r\n##########################################################################\r\n#
+    backend for when sni does not exist, or ssl term needs to happen on the edge\r\nbackend
+    be_no_sni\r\n  server fe_no_sni 127.0.0.1:{{env \"ROUTER_SERVICE_NO_SNI_PORT\"
+    \"10443\"}} weight 1 send-proxy\r\n\r\nfrontend fe_no_sni\r\n  # terminate ssl
+    on edge\r\n  bind 127.0.0.1:{{env \"ROUTER_SERVICE_NO_SNI_PORT\" \"10443\"}} ssl
+    no-sslv3 crt {{firstMatch \".+\" .DefaultCertificate \"/var/lib/haproxy/conf/default_pub_keys.pem\"}}
+    accept-proxy\r\n  mode http\r\n\r\n  # Strip off Proxy headers to prevent HTTpoxy
+    (https://httpoxy.org/)\r\n  http-request del-header Proxy\r\n\r\n  # DNS labels
+    are case insensitive (RFC 4343), we need to convert the hostname into lowercase\r\n
+    \ # before matching, or any requests containing uppercase characters will never
+    match.\r\n  http-request set-header Host %[req.hdr(Host),lower]\r\n\r\n  # check
+    re-encrypt backends first - path or host based.\r\n  acl reencrypt base,map_reg(/var/lib/haproxy/conf/os_reencrypt.map)
+    -m found\r\n\r\n  # Search from most specific to general path (host case).\r\n
+    \ use_backend be_secure:%[base,map_reg(/var/lib/haproxy/conf/os_reencrypt.map)]
+    if reencrypt\r\n\r\n  # map to http backend\r\n  # Search from most specific to
+    general path (host case).\r\n  # Note: If no match, haproxy uses the default_backend,
+    no other\r\n  #       use_backend directives below this will be processed.\r\n
+    \ use_backend be_edge_http:%[base,map_reg(/var/lib/haproxy/conf/os_edge_http_be.map)]\r\n\r\n
+    \ default_backend openshift_default\r\n\r\n##########################################################################\r\n#
+    END TLS NO SNI\r\n##########################################################################\r\n\r\nbackend
+    openshift_default\r\n  mode http\r\n  option forwardfor\r\n  #option http-keep-alive\r\n
+    \ option http-pretend-keepalive\r\n\r\n##-------------- app level backends ----------------\r\n{{/*\r\n
+    \      1. If termination is not set: This is plain http -> http.  Create a be_http:<service>
+    backend.\r\n          Incoming http traffic is terminated and sent as http to
+    the pods.\r\n\r\n       2. If termination is type 'edge': This is https -> http.
+    \ Create a be_edge_http:<service> backend.\r\n          Incoming https traffic
+    is terminated and sent as http to the pods.\r\n\r\n       3. If termination is
+    type 'reencrypt': This is https -> https.  Create a be_secure:<service> backend.\r\n
+    \         Incoming https traffic is terminated and then sent as https to the pods.\r\n\r\n
+    \      4. If termination is type 'passthrough': This is https (or any SNI TLS
+    connection) passthrough.\r\n          Create a be_tcp:<service> backend.\r\n          Incoming
+    traffic is inspected to get the hostname from the SNI header, but then all traffic
+    is\r\n          passed through to the backend pod by just looking at the TCP headers.\r\n*/}}\r\n{{-
+    range $cfgIdx, $cfg := .State }}\r\n  {{- if matchValues (print $cfg.TLSTermination)
+    \"\" \"edge\" \"reencrypt\" }}\r\n    {{- if (eq $cfg.TLSTermination \"\") }}\r\n\r\n#
+    Plain http backend\r\nbackend be_http:{{$cfgIdx}}\r\n    {{- else if (eq $cfg.TLSTermination
+    \"edge\") }}\r\n\r\n# Plain http backend but request is TLS, terminated at edge\r\nbackend
+    be_edge_http:{{$cfgIdx}}\r\n    {{ else if (eq $cfg.TLSTermination \"reencrypt\")
+    }}\r\n\r\n# Secure backend which requires re-encryption\r\nbackend be_secure:{{$cfgIdx}}\r\n
+    \   {{- end }}{{/* end chceck for router type */}}\r\n  mode http\r\n  option
+    redispatch\r\n  option forwardfor\r\n\r\n    {{- with $balanceAlgo := firstMatch
+    \"roundrobin|leastconn|source\" (index $cfg.Annotations \"haproxy.router.openshift.io/balance\")
+    (env \"ROUTER_LOAD_BALANCE_ALGORITHM\") }}\r\n  balance {{ $balanceAlgo }}\r\n
+    \   {{- else }}\r\n  balance {{ if gt $cfg.ActiveServiceUnits 1 }}roundrobin{{
+    else }}leastconn{{ end }}\r\n    {{- end }}\r\n    {{- with $ip_whiteList := firstMatch
+    $cidrListPattern (index $cfg.Annotations \"haproxy.router.openshift.io/ip_whitelist\")
+    }}\r\n  acl whitelist src {{ $ip_whiteList }}\r\n  tcp-request content reject
+    if !whitelist\r\n    {{- end }}\r\n    {{- with $value := firstMatch $timeSpecPattern
+    (index $cfg.Annotations \"haproxy.router.openshift.io/timeout\")}}\r\n  timeout
+    server  {{$value}}\r\n    {{- end }}\r\n\r\n    {{- if isTrue (index $cfg.Annotations
+    \"haproxy.router.openshift.io/rate-limit-connections\") }}\r\n  stick-table type
+    ip size 100k expire 30s store conn_cur,conn_rate(3s),http_req_rate(10s)\r\n  tcp-request
+    content track-sc2 src\r\n      {{- if (isInteger (index $cfg.Annotations \"haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp\"))
+    }}\r\n  tcp-request content reject if { src_conn_cur ge  {{ index $cfg.Annotations
+    \"haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp\" }} }\r\n
+    \     {{- else }}\r\n  # concurrent TCP connections not restricted\r\n      {{-
+    end }}\r\n\r\n      {{- if (isInteger (index $cfg.Annotations \"haproxy.router.openshift.io/rate-limit-connections.rate-tcp\"))
+    }}\r\n  tcp-request content reject if { src_conn_rate ge {{ index $cfg.Annotations
+    \"haproxy.router.openshift.io/rate-limit-connections.rate-tcp\" }} }\r\n      {{-
+    else }}\r\n  #TCP connection rate not restricted\r\n      {{- end }}\r\n\r\n      {{-
+    if (isInteger (index $cfg.Annotations \"haproxy.router.openshift.io/rate-limit-connections.rate-http\"))
+    }}\r\n  tcp-request content reject if { src_http_req_rate ge {{ index $cfg.Annotations
+    \"haproxy.router.openshift.io/rate-limit-connections.rate-http\" }} }\r\n      {{-
+    else }}\r\n  #HTTP request rate not restricted\r\n      {{- end }}\r\n    {{-
+    end }}\r\n\r\n  timeout check 5000ms\r\n  http-request set-header X-Forwarded-Host
+    %[req.hdr(host)]\r\n  http-request set-header X-Forwarded-Port %[dst_port]\r\n
+    \ http-request set-header X-Forwarded-Proto http if !{ ssl_fc }\r\n  http-request
+    set-header X-Forwarded-Proto https if { ssl_fc }\r\n  {{- if matchPattern \"(v4)?v6\"
+    $router_ip_v4_v6_mode }}\r\n  # See the quoting rules in https://tools.ietf.org/html/rfc7239
+    for IPv6 addresses (v4 addresses get translated to v6 when in hybrid mode)\r\n
+    \ http-request set-header Forwarded for=\\\"[%[src]]\\\";host=%[req.hdr(host)];proto=%[req.hdr(X-Forwarded-Proto)]\r\n
+    \ {{- else }}\r\n  http-request set-header Forwarded for=%[src];host=%[req.hdr(host)];proto=%[req.hdr(X-Forwarded-Proto)]\r\n
+    \ {{- end }}\r\n\r\n  {{- if not (isTrue (index $cfg.Annotations \"haproxy.router.openshift.io/disable_cookies\"))
+    }}\r\n  cookie {{firstMatch $cookieNamePattern (index $cfg.Annotations \"router.openshift.io/cookie_name\")
+    (env \"ROUTER_COOKIE_NAME\" \"\") $cfg.RoutingKeyName}} insert indirect nocache
+    httponly\r\n    {{- if and (matchValues (print $cfg.TLSTermination) \"edge\" \"reencrypt\")
+    (ne $cfg.InsecureEdgeTerminationPolicy \"Allow\") }} secure\r\n    {{- end }}\r\n
+    \ {{- end }}{{/* end disable cookies check */}}\r\n\r\n  {{- if matchValues (print
+    $cfg.TLSTermination) \"edge\" \"reencrypt\" }}\r\n    {{- with $hsts := firstMatch
+    $hstsPattern (index $cfg.Annotations \"haproxy.router.openshift.io/hsts_header\")
+    }}\r\n  http-response set-header Strict-Transport-Security {{$hsts}}\r\n    {{-
+    end }}{{/* hsts header */}}\r\n  {{- end }}{{/* is \"edge\" or \"reencrypt\" */}}\r\n\r\n
+    \ {{- range $serviceUnitName, $weight := $cfg.ServiceUnitNames }}\r\n    {{- if
+    ne $weight 0 }}\r\n      {{- with $serviceUnit := index $.ServiceUnits $serviceUnitName
+    }}\r\n        {{- range $idx, $endpoint := processEndpointsForAlias $cfg $serviceUnit
+    (env \"ROUTER_BACKEND_PROCESS_ENDPOINTS\" \"\") }}\r\n  server {{$endpoint.ID}}
+    {{$endpoint.IP}}:{{$endpoint.Port}} cookie {{$endpoint.IdHash}} weight {{$weight}}\r\n
+    \         {{- if (eq $cfg.TLSTermination \"reencrypt\") }} ssl\r\n            {{-
+    if $cfg.VerifyServiceHostname }} verifyhost {{ $serviceUnit.Hostname }}\r\n            {{-
+    end }}\r\n            {{- if gt (len (index $cfg.Certificates (printf \"%s_pod\"
+    $cfg.Host)).Contents) 0 }} verify required ca-file {{ $workingDir }}/cacerts/{{$cfgIdx}}.pem\r\n
+    \           {{- else }}\r\n              {{- if gt (len $defaultDestinationCA)
+    0 }} verify required ca-file {{ $defaultDestinationCA }}\r\n              {{-
+    else }} verify none\r\n              {{- end }}\r\n            {{- end }}\r\n\r\n
+    \         {{- else if or (eq $cfg.TLSTermination \"\") (eq $cfg.TLSTermination
+    \"edge\") }}\r\n          {{- end }}{{/* end type specific options*/}}\r\n\r\n
+    \           {{- if and (not $endpoint.NoHealthCheck) (gt $cfg.ActiveEndpoints
+    1) }} check inter {{firstMatch $timeSpecPattern (index $cfg.Annotations \"router.openshift.io/haproxy.health.check.interval\")
+    (env \"ROUTER_BACKEND_CHECK_INTERVAL\") \"5000ms\"}}\r\n            {{- end }}{{/*
+    end else no health check */}}\r\n          {{- end }}{{/* end if cg.TLSTermination
+    */}}\r\n        {{- end }}{{/* end range processEndpointsForAlias */}}\r\n      {{-
+    end }}{{/* end get serviceUnit from its name */}}\r\n  {{- end }}{{/* end range
+    over serviceUnitNames */}}\r\n\r\n  {{- end }}{{/* end if tls==edge/none/reencrypt
+    */}}\r\n\r\n  {{- if eq $cfg.TLSTermination \"passthrough\" }}\r\n\r\n# Secure
+    backend, pass through\r\nbackend be_tcp:{{$cfgIdx}}\r\n{{- if ne (env \"ROUTER_SYSLOG_ADDRESS\")
+    \"\"}}\r\n  option tcplog\r\n{{- end }}\r\n    {{- with $balanceAlgo := firstMatch
+    \"roundrobin|leastconn|source\" (index $cfg.Annotations \"haproxy.router.openshift.io/balance\")
+    (env \"ROUTER_LOAD_BALANCE_ALGORITHM\") }}\r\n  balance {{ $balanceAlgo }}\r\n
+    \   {{- else }}\r\n  balance {{ if gt $cfg.ActiveServiceUnits 1 }}roundrobin{{
+    else }}source{{ end }}\r\n    {{- end }}\r\n    {{- with $ip_whiteList := firstMatch
+    $cidrListPattern (index $cfg.Annotations \"haproxy.router.openshift.io/ip_whitelist\")
+    }}\r\n  acl whitelist src {{$ip_whiteList}}\r\n  tcp-request content reject if
+    !whitelist\r\n    {{- end }}\r\n    {{- with $value := firstMatch $timeSpecPattern
+    (index $cfg.Annotations \"haproxy.router.openshift.io/timeout\")}}\r\n  timeout
+    tunnel  {{$value}}\r\n    {{- end }}\r\n\r\n{{- if isTrue (index $cfg.Annotations
+    \"haproxy.router.openshift.io/rate-limit-connections\") }}\r\n  stick-table type
+    ip size 100k expire 30s store conn_cur,conn_rate(3s),http_req_rate(10s)\r\n  tcp-request
+    content track-sc2 src\r\n  {{- if (isInteger (index $cfg.Annotations \"haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp\"))
+    }}\r\n  tcp-request content reject if { src_conn_cur ge  {{ index $cfg.Annotations
+    \"haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp\" }} }\r\n
+    \ {{- else }}\r\n  # concurrent TCP connections not restricted\r\n  {{- end }}\r\n\r\n
+    \ {{- if (isInteger (index $cfg.Annotations \"haproxy.router.openshift.io/rate-limit-connections.rate-tcp\"))
+    }}\r\n  tcp-request content reject if { src_conn_rate ge {{ index $cfg.Annotations
+    \"haproxy.router.openshift.io/rate-limit-connections.rate-tcp\" }} }\r\n  {{-
+    else }}\r\n  #TCP connection rate not restricted\r\n  {{- end }}\r\n{{- end }}\r\n\r\n
+    \ hash-type consistent\r\n  timeout check 5000ms\r\n    {{- range $serviceUnitName,
+    $weight := $cfg.ServiceUnitNames }}\r\n      {{- if ne $weight 0 }}\r\n        {{-
+    with $serviceUnit := index $.ServiceUnits $serviceUnitName }}\r\n          {{-
+    range $idx, $endpoint := processEndpointsForAlias $cfg $serviceUnit (env \"ROUTER_BACKEND_PROCESS_ENDPOINTS\"
+    \"\") }}\r\n  server {{$endpoint.ID}} {{$endpoint.IP}}:{{$endpoint.Port}} weight
+    {{$weight}}\r\n            {{- if and (not $endpoint.NoHealthCheck) (gt $cfg.ActiveEndpoints
+    1) }} check inter {{firstMatch $timeSpecPattern (index $cfg.Annotations \"router.openshift.io/haproxy.health.check.interval\")
+    (env \"ROUTER_BACKEND_CHECK_INTERVAL\") \"5000ms\"}}\r\n            {{- end }}{{/*
+    end else no health check */}}\r\n          {{- end }}{{/* end range processEndpointsForAlias
+    */}}\r\n        {{- end }}{{/* end get ServiceUnit from serviceUnitName */}}\r\n
+    \     {{- end }}{{/* end if weight != 0 */}}\r\n    {{- end }}{{/* end iterate
+    over services*/}}\r\n  {{- end }}{{/*end tls==passthrough*/}}\r\n\r\n{{- end }}{{/*
+    end loop over routes */}}\r\n{{- else }}\r\n# Avoiding binding ports until routing
+    configuration has been synchronized.\r\n{{- end }}{{/* end bind ports after sync
+    */}}\r\n{{ end }}{{/* end haproxy config template */}}\r\n\r\n{{/*---------------------------------
+    END OF HAPROXY CONFIG, BELOW ARE MAPPING FILES ------------------------*/}}\r\n{{/*\r\n
+    \   os_wildcard_domain.map: contains a mapping of wildcard hosts for a\r\n\t\t\t[sub]domain
+    regexps. This map is used to check if\r\n\t\t\ta host matches a [sub]domain with
+    has wildcard support.\r\n*/}}\r\n{{ define \"/var/lib/haproxy/conf/os_wildcard_domain.map\"
+    -}}\r\n{{     if isTrue (env \"ROUTER_ALLOW_WILDCARD_ROUTES\") -}}\r\n{{       range
+    $idx, $cfg := .State -}}\r\n{{         if ne $cfg.Host \"\" -}}\r\n{{           if
+    $cfg.IsWildcard -}}\r\n{{generateRouteRegexp $cfg.Host \"\" true}} 1\r\n{{           end
+    -}}\r\n{{         end -}}\r\n{{       end -}}\r\n{{     end -}}{{/* end if router
+    allows wildcard routes */}}\r\n{{ end -}}{{/* end wildcard domain map template
+    */}}\r\n\r\n{{/*\r\n    os_http_be.map: contains a mapping of www.example.com
+    -> <service name>.  This map is used to discover the correct backend\r\n                        by
+    attaching a prefix (be_http:) by use_backend statements if acls are matched.\r\n
+    \   Also exposes the edge terminated and reencrypt routes that allow an\r\n    insecure
+    edge termination policy (http).\r\n*/}}\r\n{{ define \"/var/lib/haproxy/conf/os_http_be.map\"
+    -}}\r\n{{     range $idx, $cfg := .State -}}\r\n{{       if and (ne $cfg.Host
+    \"\") (eq $cfg.TLSTermination \"\") -}}\r\n{{generateRouteRegexp $cfg.Host $cfg.Path
+    $cfg.IsWildcard}} be_http:{{$idx}}\r\n{{       end -}}\r\n{{       if and (ne
+    $cfg.Host \"\") (and (matchValues (print $cfg.TLSTermination) \"edge\" \"reencrypt\")
+    (eq $cfg.InsecureEdgeTerminationPolicy \"Allow\")) -}}\r\n{{         if (eq $cfg.TLSTermination
+    \"edge\") -}}\r\n{{generateRouteRegexp $cfg.Host $cfg.Path $cfg.IsWildcard}} be_edge_http:{{$idx}}\r\n{{
+    \        else -}}\r\n{{generateRouteRegexp $cfg.Host $cfg.Path $cfg.IsWildcard}}
+    be_secure:{{$idx}}\r\n{{         end -}}\r\n{{       end -}}\r\n{{     end -}}\r\n{{
+    end -}}{{/* end http host map template */}}\r\n\r\n{{/*\r\n    os_edge_http_be.map:
+    same as os_http_be.map but allows us to separate tls from non-tls routes to ensure
+    we don't expose\r\n                            a tls only route on the unsecure
+    port\r\n*/}}\r\n{{ define \"/var/lib/haproxy/conf/os_edge_http_be.map\" -}}\r\n{{
+    \    range $idx, $cfg := .State -}}\r\n{{       if and (ne $cfg.Host \"\") (eq
+    $cfg.TLSTermination \"edge\") -}}\r\n{{generateRouteRegexp $cfg.Host $cfg.Path
+    $cfg.IsWildcard}} {{$idx}}\r\n{{       end -}}\r\n{{     end -}}\r\n{{ end -}}{{/*
+    end edge http host map template */}}\r\n\r\n{{/*\r\n    os_route_http_expose.map:
+    contains a mapping of www.example.com -> <service name>.\r\n    Map is used to
+    also expose edge terminated and reencrypt routes via an insecure scheme\r\n    (http)
+    if acls match for routes with insecure option set to expose.\r\n*/}}\r\n{{ define
+    \"/var/lib/haproxy/conf/os_route_http_expose.map\" -}}\r\n{{     range $idx, $cfg
+    := .State -}}\r\n{{       if and (ne $cfg.Host \"\") (and (matchValues (print
+    $cfg.TLSTermination) \"edge\" \"reencrypt\") (eq $cfg.InsecureEdgeTerminationPolicy
+    \"Allow\")) -}}\r\n{{         if (eq $cfg.TLSTermination \"edge\") -}}\r\n{{generateRouteRegexp
+    $cfg.Host $cfg.Path $cfg.IsWildcard}} be_edge_http:{{$idx}}\r\n{{         else
+    -}}\r\n{{generateRouteRegexp $cfg.Host $cfg.Path $cfg.IsWildcard}} be_secure:{{$idx}}\r\n{{
+    \        end -}}\r\n{{       end -}}\r\n{{     end -}}\r\n{{ end -}}{{/* end edge
+    and reencrypt expose http host map template */}}\r\n\r\n{{/*\r\n    os_route_http_redirect.map:
+    contains a mapping of www.example.com -> <service name>.\r\n    Map is used to
+    redirect insecure traffic to use a secure scheme (https)\r\n    if acls match
+    for routes that have the insecure option set to redirect.\r\n*/}}\r\n{{ define
+    \"/var/lib/haproxy/conf/os_route_http_redirect.map\" -}}\r\n{{     range $idx,
+    $cfg := .State -}}\r\n{{       if and (ne $cfg.Host \"\") (eq $cfg.InsecureEdgeTerminationPolicy
+    \"Redirect\") -}}\r\n{{generateRouteRegexp $cfg.Host $cfg.Path $cfg.IsWildcard}}
+    {{$idx}}\r\n{{       end -}}\r\n{{     end -}}\r\n{{ end -}}{{/* end redirect
+    http host map template */}}\r\n\r\n\r\n{{/*\r\n    os_tcp_be.map: contains a mapping
+    of www.example.com -> <service name>.  This map is used to discover the correct
+    backend\r\n                        by attaching a prefix (be_tcp: or be_secure:)
+    by use_backend statements if acls are matched.\r\n*/}}\r\n{{ define \"/var/lib/haproxy/conf/os_tcp_be.map\"
+    -}}\r\n{{     range $idx, $cfg := .State -}}\r\n{{       if and (eq $cfg.Path
+    \"\") (and (ne $cfg.Host \"\") (matchValues (print $cfg.TLSTermination) \"passthrough\"
+    \"reencrypt\")) -}}\r\n{{generateRouteRegexp $cfg.Host \"\" $cfg.IsWildcard}}
+    {{$idx}}\r\n{{       end -}}\r\n{{     end -}}\r\n{{ end -}}{{/* end tcp host
+    map template */}}\r\n\r\n{{/*\r\n    os_sni_passthrough.map: contains a mapping
+    of routes that expect to have an sni header and should be passed\r\n    \t\t\t\t\tthrough
+    to the host_be.  Driven by the termination type of the ServiceAliasConfigs\r\n*/}}\r\n{{
+    define \"/var/lib/haproxy/conf/os_sni_passthrough.map\" -}}\r\n{{     range $idx,
+    $cfg := .State -}}\r\n{{       if and (eq $cfg.Path \"\") (eq $cfg.TLSTermination
+    \"passthrough\") -}}\r\n{{generateRouteRegexp $cfg.Host \"\" $cfg.IsWildcard}}
+    1\r\n{{       end -}}\r\n{{     end -}}\r\n{{ end -}}{{/* end sni passthrough
+    map template */}}\r\n\r\n\r\n{{/*\r\n    os_reencrypt.map: marker that the host
+    is configured to use a secure backend, allows the selection of a backend\r\n                    that
+    does specific checks that avoid mitm attacks: http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#5.2-ssl\r\n*/}}\r\n{{
+    define \"/var/lib/haproxy/conf/os_reencrypt.map\" -}}\r\n{{     range $idx, $cfg
+    := .State -}}\r\n{{       if and (ne $cfg.Host \"\") (eq $cfg.TLSTermination \"reencrypt\")
+    -}}\r\n{{generateRouteRegexp $cfg.Host $cfg.Path $cfg.IsWildcard}} {{$idx}}\r\n{{
+    \      end -}}\r\n{{     end -}}\r\n{{ end -}}{{/* end reencrypt map template
+    */}}\r\n\r\n{{/*\r\n    cert_config.map: contains a mapping of <cert-file> ->
+    example.org\r\n                     This map is used to present the appropriate
+    cert\r\n                     based on the sni header.\r\n    Note: It is sort
+    of a reverse map for our case but the order\r\n          \"<cert>: <domain-set>\"
+    is important as this allows us to use\r\n         wildcards and/or use a deny
+    set with !<domain> in the future.\r\n*/}}\r\n{{ define \"/var/lib/haproxy/conf/cert_config.map\"
+    -}}\r\n{{     $workingDir := .WorkingDir -}}\r\n{{     range $idx, $cfg := .State
+    -}}\r\n{{       if and (ne $cfg.Host \"\") (matchValues (print $cfg.TLSTermination)
+    \"edge\" \"reencrypt\") -}}\r\n{{         $cert := index $cfg.Certificates $cfg.Host
+    -}}\r\n{{         if ne $cert.Contents \"\" -}}\r\n{{$workingDir}}/certs/{{$idx}}.pem
+    {{genCertificateHostName $cfg.Host $cfg.IsWildcard}}\r\n{{         end -}}\r\n{{
+    \     end -}}\r\n{{     end -}}\r\n{{ end }}{{/* end cert_config map template
+    */}}\r\n"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: haproxy-test-configs

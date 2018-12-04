@@ -1,0 +1,106 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 2 (0x2)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=etcd-signer@1540898527
+        Validity
+            Not Before: Oct 30 11:24:25 2018 GMT
+            Not After : Oct 29 11:24:25 2023 GMT
+        Subject: CN=amos01-master001.amosdemo.io
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:d4:9c:83:c5:ff:31:88:52:94:d2:2f:ba:50:00:
+                    75:d3:6a:f1:3b:4d:6f:01:69:8f:e3:99:c0:6c:24:
+                    5e:a0:c9:cf:49:0d:5b:39:c3:0f:dc:33:62:40:bf:
+                    54:01:46:3d:47:3e:2c:45:5a:ef:51:36:bf:35:df:
+                    f1:c2:24:6c:9e:48:34:40:c1:a1:63:0f:59:56:36:
+                    cd:03:41:b8:63:e5:7e:2f:0d:c0:b4:12:87:d1:a5:
+                    5f:aa:32:cc:0d:5b:be:c8:79:1f:1b:6f:bd:dd:5a:
+                    66:0a:1a:75:f0:22:5c:f5:6b:6e:4d:cf:31:75:f5:
+                    7e:70:79:98:5b:ae:d4:79:b5:20:1b:6f:0c:1e:c3:
+                    b7:9c:95:7a:a5:fb:f6:df:0a:47:8c:a4:38:b7:79:
+                    dd:1c:b0:23:10:7a:c6:4d:d1:7c:22:3b:7b:5b:11:
+                    fa:f1:e0:1e:55:51:67:d1:ea:3b:b6:06:7b:a7:16:
+                    3c:01:65:1c:e8:6b:a1:82:5d:ea:18:13:31:20:ed:
+                    e0:8a:ea:ae:06:2d:24:de:1b:b9:1e:ff:91:c9:5a:
+                    b0:5f:33:d9:08:0a:dc:ce:30:c8:d8:d5:ca:b9:17:
+                    26:43:b4:21:ad:3f:66:64:23:ca:c3:d8:78:c4:5c:
+                    a0:f2:5b:fc:18:ae:e6:23:27:23:b1:1d:4d:40:88:
+                    72:75
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Authority Key Identifier: 
+                keyid:BC:EA:2F:66:DE:54:35:81:AC:50:DB:1B:41:D8:6A:CC:F0:A9:54:5F
+                DirName:/CN=etcd-signer@1540898527
+                serial:A6:43:B5:65:61:7A:D1:37
+
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication, TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+            X509v3 Subject Key Identifier: 
+                04:93:19:B5:32:EA:CF:6A:E1:E9:18:BE:02:77:94:C9:62:62:21:DC
+            X509v3 Subject Alternative Name: 
+                IP Address:172.31.96.187, DNS:amos01-master001.amosdemo.io
+    Signature Algorithm: sha256WithRSAEncryption
+         48:bc:c0:da:0d:20:b0:27:f1:28:bb:70:19:3a:bd:15:b0:28:
+         89:72:62:e3:52:d6:1f:c2:2a:15:a7:87:76:b5:c2:14:f4:d1:
+         a6:a6:17:f0:bf:4e:6b:dc:2d:1d:d5:b7:fa:3e:e9:fd:6f:79:
+         34:f9:02:5e:be:eb:6e:dc:56:90:d4:a2:d3:d6:a5:2a:91:bd:
+         a2:c8:9a:31:4c:1f:89:e6:7e:b0:29:54:24:06:80:e5:3c:1d:
+         48:73:94:0c:84:02:33:19:3a:f6:39:84:32:91:da:22:c2:d1:
+         bf:cc:17:49:97:b8:17:97:60:84:f1:58:ab:c8:a3:dd:c1:45:
+         af:ac:34:a9:75:f6:bc:20:79:7d:4b:b2:9f:88:d7:5f:2a:e5:
+         79:70:42:bb:36:89:59:36:5d:60:c5:38:6c:50:52:16:95:a1:
+         cf:7c:1f:6f:86:e1:fc:f1:cc:8e:fa:5e:93:d6:e6:37:60:c0:
+         1a:44:f4:7f:95:4a:0c:9b:b8:48:b3:c6:25:91:c7:b0:cb:65:
+         ec:4d:ea:78:ec:45:39:fb:dd:02:e0:29:20:5c:7e:ce:96:59:
+         38:4f:ff:55:ef:c1:0e:db:4a:f3:04:aa:29:d6:15:4d:13:25:
+         7f:6b:29:86:44:9f:fa:6e:ae:c3:84:6b:9b:a1:f6:41:b4:97:
+         65:ce:b1:43:a2:db:69:f3:63:93:d1:cd:c3:e2:a7:dd:98:f8:
+         2a:36:a3:eb:6f:80:ef:a9:3b:31:a9:8e:bd:1f:71:fb:27:cb:
+         c7:86:aa:a2:0c:bb:a5:d1:ef:73:d7:93:e3:22:cb:40:81:70:
+         dd:f5:71:51:b2:5f:e3:37:fa:96:70:c6:d4:71:33:34:0f:de:
+         7e:30:3b:5b:f6:c3:43:a1:46:8b:dd:1a:92:da:22:3b:3c:d8:
+         a9:05:93:95:b8:76:24:c5:15:62:9b:11:ad:4d:9a:76:ff:5a:
+         ba:26:6c:6d:21:ca:64:26:89:fe:19:c0:90:db:35:e7:d6:4f:
+         22:ca:8f:a4:39:c8:1b:3f:5f:23:29:ac:7f:4f:6d:96:57:45:
+         3d:32:b6:57:c5:2d:bb:92:f1:6d:79:9a:b3:34:bc:8f:db:3f:
+         c6:49:74:82:32:89:a3:e7:94:76:ec:e0:6e:9a:32:fb:a5:9c:
+         68:58:98:a4:89:4e:17:d6:9b:bb:58:b4:c6:a7:98:3d:76:60:
+         5b:5d:81:bf:90:a6:2e:01:4d:c8:2f:a1:b6:ba:e5:5d:c3:e1:
+         41:70:97:c7:71:dc:9d:94:7e:fd:ad:eb:22:87:69:16:48:3f:
+         71:dd:53:4c:85:9c:eb:08:4e:77:b6:35:aa:2c:27:3e:2f:1d:
+         84:8c:de:de:87:f7:8f:8a
+-----BEGIN CERTIFICATE-----
+MIIEojCCAoqgAwIBAgIBAjANBgkqhkiG9w0BAQsFADAhMR8wHQYDVQQDDBZldGNk
+LXNpZ25lckAxNTQwODk4NTI3MB4XDTE4MTAzMDExMjQyNVoXDTIzMTAyOTExMjQy
+NVowJzElMCMGA1UEAwwcYW1vczAxLW1hc3RlcjAwMS5hbW9zZGVtby5pbzCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANScg8X/MYhSlNIvulAAddNq8TtN
+bwFpj+OZwGwkXqDJz0kNWznDD9wzYkC/VAFGPUc+LEVa71E2vzXf8cIkbJ5INEDB
+oWMPWVY2zQNBuGPlfi8NwLQSh9GlX6oyzA1bvsh5Hxtvvd1aZgoadfAiXPVrbk3P
+MXX1fnB5mFuu1Hm1IBtvDB7Dt5yVeqX79t8KR4ykOLd53RywIxB6xk3RfCI7e1sR
++vHgHlVRZ9HqO7YGe6cWPAFlHOhroYJd6hgTMSDt4IrqrgYtJN4buR7/kclasF8z
+2QgK3M4wyNjVyrkXJkO0Ia0/ZmQjysPYeMRcoPJb/Biu5iMnI7EdTUCIcnUCAwEA
+AaOB3jCB2zBRBgNVHSMESjBIgBS86i9m3lQ1gaxQ2xtB2GrM8KlUX6ElpCMwITEf
+MB0GA1UEAwwWZXRjZC1zaWduZXJAMTU0MDg5ODUyN4IJAKZDtWVhetE3MAwGA1Ud
+EwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMAsGA1UdDwQE
+AwIFoDAdBgNVHQ4EFgQUBJMZtTLqz2rh6Ri+AneUyWJiIdwwLQYDVR0RBCYwJIcE
+rB9gu4IcYW1vczAxLW1hc3RlcjAwMS5hbW9zZGVtby5pbzANBgkqhkiG9w0BAQsF
+AAOCAgEASLzA2g0gsCfxKLtwGTq9FbAoiXJi41LWH8IqFaeHdrXCFPTRpqYX8L9O
+a9wtHdW3+j7p/W95NPkCXr7rbtxWkNSi09alKpG9osiaMUwfieZ+sClUJAaA5Twd
+SHOUDIQCMxk69jmEMpHaIsLRv8wXSZe4F5dghPFYq8ij3cFFr6w0qXX2vCB5fUuy
+n4jXXyrleXBCuzaJWTZdYMU4bFBSFpWhz3wfb4bh/PHMjvpek9bmN2DAGkT0f5VK
+DJu4SLPGJZHHsMtl7E3qeOxFOfvdAuApIFx+zpZZOE//Ve/BDttK8wSqKdYVTRMl
+f2sphkSf+m6uw4Rrm6H2QbSXZc6xQ6LbafNjk9HNw+Kn3Zj4Kjaj62+A76k7MamO
+vR9x+yfLx4aqogy7pdHvc9eT4yLLQIFw3fVxUbJf4zf6lnDG1HEzNA/efjA7W/bD
+Q6FGi90aktoiOzzYqQWTlbh2JMUVYpsRrU2adv9auiZsbSHKZCaJ/hnAkNs159ZP
+IsqPpDnIGz9fIymsf09tlldFPTK2V8Utu5LxbXmaszS8j9s/xkl0gjKJo+eUduzg
+bpoy+6WcaFiYpIlOF9abu1i0xqeYPXZgW12Bv5CmLgFNyC+htrrlXcPhQXCXx3Hc
+nZR+/a3rIodpFkg/cd1TTIWc6whOd7Y1qiwnPi8dhIze3of3j4o=
+-----END CERTIFICATE-----

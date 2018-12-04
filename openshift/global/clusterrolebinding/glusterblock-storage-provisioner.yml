@@ -1,0 +1,14 @@
+apiVersion: v1
+groupNames: null
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: null
+  name: glusterblock-storage-provisioner
+roleRef:
+  name: glusterblock-provisioner-runner
+subjects:
+- kind: ServiceAccount
+  name: glusterblock-storage-provisioner
+  namespace: glusterfs
+userNames:
+- system:serviceaccount:glusterfs:glusterblock-storage-provisioner

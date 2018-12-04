@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/deployment-config.latest-version: "2"
+    openshift.io/deployment-config.name: cakephp-ex
+    openshift.io/deployment.name: cakephp-ex-2
+    openshift.io/scc: restricted
+  creationTimestamp: null
+  generateName: cakephp-ex-2-
+  labels:
+    app: cakephp-ex
+    deployment: cakephp-ex-2
+    deploymentconfig: cakephp-ex
+  ownerReferences:
+  - apiVersion: v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicationController
+    name: cakephp-ex-2
+    uid: 77cc0e8f-f1fa-11e8-ba2b-0aa0c5b29fe8
+spec:
+  containers:
+  - image: docker-registry.default.svc:5000/sanketcloudform/cakephp-ex@sha256:60240dd1952c582c02797229892e53469176fc2af4a9e08718e4329d6cd2e7f8
+    imagePullPolicy: Always
+    name: cakephp-ex
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    - containerPort: 8443
+      protocol: TCP
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - KILL
+        - MKNOD
+        - SETGID
+        - SETUID
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-nlvbv
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  imagePullSecrets:
+  - name: default-dockercfg-zcw92
+  nodeName: amos01-compute001.amosdemo.io
+  nodeSelector:
+    node-role.kubernetes.io/compute: "true"
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    seLinuxOptions:
+      level: s0:c22,c9
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  volumes:
+  - name: default-token-nlvbv
+    secret:
+      defaultMode: 420
+      secretName: default-token-nlvbv
+status:
+  phase: Pending
+  qosClass: BestEffort

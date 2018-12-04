@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  creationTimestamp: null
+  labels:
+    metrics-infra: hawkular-metrics
+    name: hawkular-metrics
+  name: hawkular-metrics
+subsets:
+- addresses:
+  - ip: 10.128.0.139
+    nodeName: amos01-master001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: hawkular-metrics-nltqs
+      namespace: openshift-infra
+      resourceVersion: "5380855"
+      uid: 37c272bf-ed6a-11e8-ba2b-0aa0c5b29fe8
+  - ip: 10.128.0.140
+    nodeName: amos01-master001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: hawkular-metrics-488bl
+      namespace: openshift-infra
+      resourceVersion: "5380846"
+      uid: 2ca3f56d-ed72-11e8-ba2b-0aa0c5b29fe8
+  - ip: 10.128.0.141
+    nodeName: amos01-master001.amosdemo.io
+    targetRef:
+      kind: Pod
+      name: hawkular-metrics-6qgwg
+      namespace: openshift-infra
+      resourceVersion: "5380851"
+      uid: 2ca207a2-ed72-11e8-ba2b-0aa0c5b29fe8
+  ports:
+  - port: 8443
+    protocol: TCP

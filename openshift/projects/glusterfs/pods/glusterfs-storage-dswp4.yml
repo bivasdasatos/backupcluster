@@ -1,0 +1,173 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/scc: privileged
+  creationTimestamp: null
+  generateName: glusterfs-storage-
+  labels:
+    controller-revision-hash: "2107259319"
+    glusterfs: storage-pod
+    glusterfs-node: pod
+    pod-template-generation: "1"
+  ownerReferences:
+  - apiVersion: extensions/v1beta1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DaemonSet
+    name: glusterfs-storage
+    uid: 4ca3f828-dd9b-11e8-b362-0aa0c5b29fe8
+spec:
+  containers:
+  - env:
+    - name: GB_GLFS_LRU_COUNT
+      value: "15"
+    - name: TCMU_LOGDIR
+      value: /var/log/glusterfs/gluster-block
+    - name: GB_LOGDIR
+      value: /var/log/glusterfs/gluster-block
+    image: rhgs3/rhgs-server-rhel7:latest
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      exec:
+        command:
+        - /bin/bash
+        - -c
+        - systemctl status glusterd.service
+      failureThreshold: 50
+      initialDelaySeconds: 40
+      periodSeconds: 25
+      successThreshold: 1
+      timeoutSeconds: 3
+    name: glusterfs
+    readinessProbe:
+      exec:
+        command:
+        - /bin/bash
+        - -c
+        - systemctl status glusterd.service
+      failureThreshold: 50
+      initialDelaySeconds: 40
+      periodSeconds: 25
+      successThreshold: 1
+      timeoutSeconds: 3
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    securityContext:
+      capabilities: {}
+      privileged: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/lib/heketi
+      name: glusterfs-heketi
+    - mountPath: /run
+      name: glusterfs-run
+    - mountPath: /run/lvm
+      name: glusterfs-lvm
+    - mountPath: /etc/glusterfs
+      name: glusterfs-etc
+    - mountPath: /var/log/glusterfs
+      name: glusterfs-logs
+    - mountPath: /var/lib/glusterd
+      name: glusterfs-config
+    - mountPath: /dev
+      name: glusterfs-dev
+    - mountPath: /var/lib/misc/glusterfsd
+      name: glusterfs-misc
+    - mountPath: /sys/fs/cgroup
+      name: glusterfs-cgroup
+      readOnly: true
+    - mountPath: /etc/ssl
+      name: glusterfs-ssl
+      readOnly: true
+    - mountPath: /usr/lib/modules
+      name: kernel-modules
+      readOnly: true
+    - mountPath: /etc/target
+      name: glusterfs-target
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-srqxb
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  hostNetwork: true
+  imagePullSecrets:
+  - name: default-dockercfg-4mcj2
+  nodeName: amos01-gluster001.amosdemo.io
+  nodeSelector:
+    glusterfs: storage-host
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/disk-pressure
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /var/lib/heketi
+      type: ""
+    name: glusterfs-heketi
+  - emptyDir: {}
+    name: glusterfs-run
+  - hostPath:
+      path: /run/lvm
+      type: ""
+    name: glusterfs-lvm
+  - hostPath:
+      path: /etc/glusterfs
+      type: ""
+    name: glusterfs-etc
+  - hostPath:
+      path: /var/log/glusterfs
+      type: ""
+    name: glusterfs-logs
+  - hostPath:
+      path: /var/lib/glusterd
+      type: ""
+    name: glusterfs-config
+  - hostPath:
+      path: /dev
+      type: ""
+    name: glusterfs-dev
+  - hostPath:
+      path: /var/lib/misc/glusterfsd
+      type: ""
+    name: glusterfs-misc
+  - hostPath:
+      path: /sys/fs/cgroup
+      type: ""
+    name: glusterfs-cgroup
+  - hostPath:
+      path: /etc/ssl
+      type: ""
+    name: glusterfs-ssl
+  - hostPath:
+      path: /usr/lib/modules
+      type: ""
+    name: kernel-modules
+  - hostPath:
+      path: /etc/target
+      type: ""
+    name: glusterfs-target
+  - name: default-token-srqxb
+    secret:
+      defaultMode: 420
+      secretName: default-token-srqxb
+status:
+  phase: Pending
+  qosClass: Burstable

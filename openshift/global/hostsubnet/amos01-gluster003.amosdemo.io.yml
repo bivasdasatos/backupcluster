@@ -1,0 +1,10 @@
+apiVersion: v1
+host: amos01-gluster003.amosdemo.io
+hostIP: 172.31.128.209
+kind: HostSubnet
+metadata:
+  annotations:
+    pod.network.openshift.io/node-uid: d77af4ff-dd9a-11e8-b362-0aa0c5b29fe8
+  creationTimestamp: null
+  name: amos01-gluster003.amosdemo.io
+subnet: 10.129.2.0/23

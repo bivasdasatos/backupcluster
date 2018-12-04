@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Route
+metadata:
+  creationTimestamp: null
+  labels:
+    component: support
+    logging-infra: support
+    provider: openshift
+  name: logging-kibana
+spec:
+  host: kibana.apps01.amosdemo.io
+  tls:
+    caCertificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIC2jCCAcKgAwIBAgIBATANBgkqhkiG9w0BAQsFADAeMRwwGgYDVQQDExNsb2dn
+      aW5nLXNpZ25lci10ZXN0MB4XDTE4MTEwMjA1MjkxMVoXDTIzMTEwMTA1MjkxMlow
+      HjEcMBoGA1UEAxMTbG9nZ2luZy1zaWduZXItdGVzdDCCASIwDQYJKoZIhvcNAQEB
+      BQADggEPADCCAQoCggEBAL3/OafCeQRRtt1LiFBnZ5az0Sl56c5LqxQOsDXsUr/9
+      yznJlPjudljMyD4wgHJjiH/zntB/gtCyqrQCF2BAbmnQnQh3XPXLUKtpytA2FA4d
+      SmMbhq+SGubZT7SzkVepD5SO8qUGAABwSDThGDiWzcUWTswXKruimEwnWU+vvPtO
+      RlD+UEcXzXGQ3LPWLpGLR/OBZ4WQPNRxp4G38eoOEoC5ySHBcVyNnBQXN2yznSi1
+      twlWRuM085zcXznPdVA2S24n7tZSzaMYybRRwGoCTkNYFujSuvSURP6X/c7BGD4T
+      KKi7sfk/ASRutOa8wh47o6+FlbHc22Hc7cGkL/7GsNMCAwEAAaMjMCEwDgYDVR0P
+      AQH/BAQDAgKkMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAAhH
+      pjJ1hzR0Ww9UFzr3DyqyECftsXxgdBv2ImmDn8AHLqqoACL1FAdNtRiDXVyOqZml
+      k80ZG6TVy+xMBuy+TeWnqbss9ypjKoDd+EMVS71Pr6ZSWXk6OsT6owjeTPhfeT0m
+      vTrOqjgXEqZHF8UEJ1f6qZ8QlDvg1+Jyq3mNcKcz/iKH0YRibH/bvZCoVUvMfMM7
+      41BPW9wF2AQhNUk0ZPn7b2uXAZrI85mNbc6dPmSeo9GhbcpBhpaCn6Q9WxbcGn8t
+      Z9iT8dXurtTtmAGMlQ0SwCKfXLDENo/p6t4I9a3xSN2EGg2ohvrvldh1pWuZpXHw
+      FvVjE6fFMajJtKD3wfg=
+      -----END CERTIFICATE-----
+    destinationCACertificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIC2jCCAcKgAwIBAgIBATANBgkqhkiG9w0BAQsFADAeMRwwGgYDVQQDExNsb2dn
+      aW5nLXNpZ25lci10ZXN0MB4XDTE4MTEwMjA1MjkxMVoXDTIzMTEwMTA1MjkxMlow
+      HjEcMBoGA1UEAxMTbG9nZ2luZy1zaWduZXItdGVzdDCCASIwDQYJKoZIhvcNAQEB
+      BQADggEPADCCAQoCggEBAL3/OafCeQRRtt1LiFBnZ5az0Sl56c5LqxQOsDXsUr/9
+      yznJlPjudljMyD4wgHJjiH/zntB/gtCyqrQCF2BAbmnQnQh3XPXLUKtpytA2FA4d
+      SmMbhq+SGubZT7SzkVepD5SO8qUGAABwSDThGDiWzcUWTswXKruimEwnWU+vvPtO
+      RlD+UEcXzXGQ3LPWLpGLR/OBZ4WQPNRxp4G38eoOEoC5ySHBcVyNnBQXN2yznSi1
+      twlWRuM085zcXznPdVA2S24n7tZSzaMYybRRwGoCTkNYFujSuvSURP6X/c7BGD4T
+      KKi7sfk/ASRutOa8wh47o6+FlbHc22Hc7cGkL/7GsNMCAwEAAaMjMCEwDgYDVR0P
+      AQH/BAQDAgKkMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAAhH
+      pjJ1hzR0Ww9UFzr3DyqyECftsXxgdBv2ImmDn8AHLqqoACL1FAdNtRiDXVyOqZml
+      k80ZG6TVy+xMBuy+TeWnqbss9ypjKoDd+EMVS71Pr6ZSWXk6OsT6owjeTPhfeT0m
+      vTrOqjgXEqZHF8UEJ1f6qZ8QlDvg1+Jyq3mNcKcz/iKH0YRibH/bvZCoVUvMfMM7
+      41BPW9wF2AQhNUk0ZPn7b2uXAZrI85mNbc6dPmSeo9GhbcpBhpaCn6Q9WxbcGn8t
+      Z9iT8dXurtTtmAGMlQ0SwCKfXLDENo/p6t4I9a3xSN2EGg2ohvrvldh1pWuZpXHw
+      FvVjE6fFMajJtKD3wfg=
+      -----END CERTIFICATE-----
+    insecureEdgeTerminationPolicy: Redirect
+    termination: reencrypt
+  to:
+    kind: Service
+    name: logging-kibana
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-11-22T06:33:29Z
+      status: "True"
+      type: Admitted
+    host: kibana.apps01.amosdemo.io
+    routerName: router
+    wildcardPolicy: None
